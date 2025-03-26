@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+alembic = "*"
+click = "*"
+flask = "*"
+flask-cors = "*"
+flask-login = "*"
+flask-migrate = "*"
+flask-sqlalchemy = "*"
+flask-wtf = "*"
+greenlet = "*"
+gunicorn = "*"
+importlib-metadata = "*"
+itsdangerous = "*"
+jinja2 = "*"
+mako = "*"
+markupsafe = "*"
+python-dateutil = "*"
+python-dotenv = "*"
+python-editor = "*"
+setuptools = "*"
+six = "*"
+sqlalchemy = "*"
+werkzeug = "*"
+wtforms = "*"
+zipp = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
