@@ -14,6 +14,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
+     # Relationship to Portfolio
+    portfolio = db.relationship('Portfolio', back_populates='user', uselist=False, cascade="all, delete-orphan")
+
     @property
     def password(self):
         return self.hashed_password
