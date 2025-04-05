@@ -10,19 +10,12 @@ def seed_users():
         username='marnie', email='marnie@aa.io', password='password2')
     bobbie = User(
         username='bobbie', email='bobbie@aa.io', password='password3')
-    wayne = User(
-        username='wayne', email='wayne@aa.io', password='password4')
-    ally = User(
-        username='ally', email='ally@aa.io', password='password5')
-    tom = User(
-        username='tommy', email='tommy@aa.io', password='password6')
+
 
     db.session.add(demo)
     db.session.add(marnie)
     db.session.add(bobbie)
-    db.session.add(wayne)
-    db.session.add(ally)
-    db.session.add(tom)
+
     db.session.commit()
 
 
@@ -33,6 +26,7 @@ def seed_users():
 # sqlite3 in development you need to instead use DELETE to remove all data and
 # it will reset the primary keys for you as well.
 def undo_users():
+    print("Clearing users table...")
     if environment == "production":
         db.session.execute(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;")
     else:

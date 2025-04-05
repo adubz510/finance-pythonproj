@@ -1,3 +1,4 @@
+# app/api/portfolio_routes.py
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 from app.models import db, Portfolio
@@ -20,8 +21,10 @@ def create_portfolio():
     existing_portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
     if existing_portfolio:
         return {'error': 'Portfolio already exists'}, 400
+    
+    default_name = f"{current_user.username}'s Portfolio"
 
-    portfolio = Portfolio(user_id=current_user.id, balance=10000.0)
+    portfolio = Portfolio(user_id=current_user.id, name=default_name, balance=1000.00)
     db.session.add(portfolio)
     db.session.commit()
     return {'message': 'Portfolio created successfully', 'portfolio': portfolio.to_dict()}, 201

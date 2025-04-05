@@ -2,7 +2,6 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -14,23 +13,24 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-     # Relationship to Portfolio
-    portfolio = db.relationship('Portfolio', back_populates='user', uselist=False, cascade="all, delete-orphan")
+    # Relationship to Portfolio (One-to-Many: A user can have multiple portfolios)
+    portfolios = db.relationship('Portfolio', back_populates='user', cascade="all, delete-orphan", lazy="dynamic")
 
     @property
     def password(self):
-        return self.hashed_password
+        raise AttributeError("Password is not a readable attribute.")  # Prevent direct access
 
     @password.setter
     def password(self, password):
         self.hashed_password = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.hashed_password, password)
 
     def to_dict(self):
         return {
             'id': self.id,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'portfolios': [portfolio.to_dict() for portfolio in self.portfolios]  # Include portfolios in response
         }
