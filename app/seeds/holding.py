@@ -1,31 +1,31 @@
 from app.models import db, Holding, environment, SCHEMA
 from sqlalchemy.sql import text
 
-# Example seed data: Three holdings for each portfolio
+
 holding_data = [
-    {'portfolio_id': 1, 'stock_name': 'APL', 'quantity': 10},
-    {'portfolio_id': 1, 'stock_name': 'GOGL', 'quantity': 5},
-    {'portfolio_id': 1, 'stock_name': 'AMZ', 'quantity': 3},
+    {'portfolio_id': 1, 'stock_name': 'AAPL', 'quantity': 10},
+    {'portfolio_id': 1, 'stock_name': 'GOOGL', 'quantity': 5},
+    {'portfolio_id': 1, 'stock_name': 'AMZN', 'quantity': 3},
     
-    {'portfolio_id': 2, 'stock_name': 'TSL', 'quantity': 12},
-    {'portfolio_id': 2, 'stock_name': 'MSF', 'quantity': 8},
-    {'portfolio_id': 2, 'stock_name': 'NFX', 'quantity': 7},
+    {'portfolio_id': 2, 'stock_name': 'TSLA', 'quantity': 12},
+    {'portfolio_id': 2, 'stock_name': 'MSFT', 'quantity': 8},
+    {'portfolio_id': 2, 'stock_name': 'META', 'quantity': 7},
     
-    {'portfolio_id': 3, 'stock_name': 'NVD', 'quantity': 6},
-    {'portfolio_id': 3, 'stock_name': 'MET', 'quantity': 4},
-    {'portfolio_id': 3, 'stock_name': 'INT', 'quantity': 9},
+    {'portfolio_id': 3, 'stock_name': 'NVDA', 'quantity': 6},
+    {'portfolio_id': 3, 'stock_name': 'AAPL', 'quantity': 4},
+    {'portfolio_id': 3, 'stock_name': 'MSFT', 'quantity': 9},
     
-    {'portfolio_id': 4, 'stock_name': 'DIS', 'quantity': 15},
-    {'portfolio_id': 4, 'stock_name': 'BABA', 'quantity': 10},
-    {'portfolio_id': 4, 'stock_name': 'PYPL', 'quantity': 2},
+    {'portfolio_id': 4, 'stock_name': 'GOOGL', 'quantity': 15},
+    {'portfolio_id': 4, 'stock_name': 'AMZN', 'quantity': 10},
+    {'portfolio_id': 4, 'stock_name': 'TSLA', 'quantity': 2},
     
-    {'portfolio_id': 5, 'stock_name': 'AMD', 'quantity': 20},
-    {'portfolio_id': 5, 'stock_name': 'CRM', 'quantity': 5},
-    {'portfolio_id': 5, 'stock_name': 'GS', 'quantity': 3},
+    {'portfolio_id': 5, 'stock_name': 'AAPL', 'quantity': 20},
+    {'portfolio_id': 5, 'stock_name': 'GOOGL', 'quantity': 5},
+    {'portfolio_id': 5, 'stock_name': 'META', 'quantity': 3},
     
-    {'portfolio_id': 6, 'stock_name': 'SPY', 'quantity': 30},
-    {'portfolio_id': 6, 'stock_name': 'QQQ', 'quantity': 10},
-    {'portfolio_id': 6, 'stock_name': 'IWM', 'quantity': 8},
+    {'portfolio_id': 6, 'stock_name': 'MSFT', 'quantity': 30},
+    {'portfolio_id': 6, 'stock_name': 'AMZN', 'quantity': 10},
+    {'portfolio_id': 6, 'stock_name': 'TSLA', 'quantity': 8},
 ]
 
 def seed_holdings():
