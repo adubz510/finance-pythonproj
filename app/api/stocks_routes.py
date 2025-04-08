@@ -29,7 +29,7 @@ def search_stocks():
     ).all()
     return jsonify([stock.to_dict() for stock in results])
 
-# (Optional) Add a dummy stock (for development only)
+# Dummy stock (using for development only)
 @stocks_routes.route('/', methods=['POST'])
 def create_stock():
     data = request.json
