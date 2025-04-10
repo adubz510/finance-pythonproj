@@ -8,11 +8,12 @@ class Portfolio(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
-    name = db.Column(db.String(255), nullable=False)  
+    name = db.Column(db.String(100), nullable=False)  
     balance = db.Column(db.Float, nullable=False, default=0.00)  
 
     user = db.relationship('User', back_populates='portfolios')
-    holdings = db.relationship('Holding', back_populates='portfolio', cascade="all, delete-orphan")
+    holdings = db.relationship('Holding', back_populates='portfolio', cascade="all, delete-orphan", lazy='joined')
+    transactions = db.relationship('Transaction', back_populates='portfolio', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {

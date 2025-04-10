@@ -15,7 +15,9 @@ class User(db.Model, UserMixin):
 
     # Relationship to Portfolio (One-to-Many: A user can have multiple portfolios)
     portfolios = db.relationship('Portfolio', back_populates='user', cascade="all, delete-orphan", lazy="dynamic")
+    watchlists = db.relationship('Watchlist', back_populates='user', cascade="all, delete-orphan")
 
+    
     @property
     def password(self):
         raise AttributeError("Password is not a readable attribute.")  # Prevent direct access

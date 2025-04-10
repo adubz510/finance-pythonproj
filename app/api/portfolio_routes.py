@@ -14,17 +14,15 @@ def get_portfolio():
         return jsonify({'error': 'Portfolio not found'}), 404
     return jsonify({'portfolio': portfolio.to_dict()}), 200
 
-# Create a new portfolio (Only if user doesn't already have one)
+# Create a new portfolio (Allowing multiple portfolios per user)
 @portfolio_routes.route('/', methods=['POST'])
 @login_required
 def create_portfolio():
-    existing_portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
-    if existing_portfolio:
-        return jsonify({'error': 'Portfolio already exists'}), 400
-    
-    default_name = f"{current_user.username}'s Portfolio"
+    data = request.get_json()
+    name = data.get('name', f"{current_user.username}'s Portfolio")  # Default to user's name if not provided
+    balance = data.get('balance', 1000.00)  # Default balance is 1000.00 if not provided
 
-    portfolio = Portfolio(user_id=current_user.id, name=default_name, balance=1000.00)
+    portfolio = Portfolio(user_id=current_user.id, name=name, balance=balance)
     db.session.add(portfolio)
     db.session.commit()
     
