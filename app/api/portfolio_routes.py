@@ -5,13 +5,21 @@ from app.models import db, Portfolio
 
 portfolio_routes = Blueprint('portfolios', __name__)
 
-# Get the current user's portfolio
+# Get all current user's portfolio
 @portfolio_routes.route('/', methods=['GET'])
 @login_required
-def get_portfolio():
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+def get_portfolios():
+    portfolios = Portfolio.query.filter_by(user_id=current_user.id).all()
+    return jsonify({'portfolios': [p.to_dict() for p in portfolios]}), 200
+
+# Get a specific portfolio by ID
+@portfolio_routes.route('/<int:portfolio_id>', methods=['GET'])
+@login_required
+def get_portfolio_by_id(portfolio_id):
+    portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
+
     return jsonify({'portfolio': portfolio.to_dict()}), 200
 
 # Create a new portfolio (Allowing multiple portfolios per user)
@@ -28,11 +36,11 @@ def create_portfolio():
     
     return jsonify({'message': 'Portfolio created successfully', 'portfolio': portfolio.to_dict()}), 201
 
-# Update portfolio balance (Add fake money)
-@portfolio_routes.route('/balance', methods=['PUT'])
+# update balance of specific portfolio
+@portfolio_routes.route('/<int:portfolio_id>/balance', methods=['PUT'])
 @login_required
-def update_balance():
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+def update_balance(portfolio_id):
+    portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
 
@@ -47,11 +55,11 @@ def update_balance():
     
     return jsonify({'message': 'Balance updated successfully', 'portfolio': portfolio.to_dict()}), 200
 
-# Delete portfolio (Simulating selling all stocks)
-@portfolio_routes.route('/', methods=['DELETE'])
+# delete portfolio
+@portfolio_routes.route('/<int:portfolio_id>', methods=['DELETE'])
 @login_required
-def delete_portfolio():
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+def delete_portfolio(portfolio_id):
+    portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
 

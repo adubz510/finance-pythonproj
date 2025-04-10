@@ -33,5 +33,7 @@ class Transaction(db.Model):
             'total_amount': self.total_amount,
             'timestamp': self.timestamp,
             'portfolio_id': self.portfolio_id,
-            'stock': self.stock.to_dict()
+            'stock': self.stock.to_dict(),
+            'holding_id': self.holding_id,  # Include the holding_id
+            'holding': self.holding.to_dict() if self.holding else None  # Optionally include holding details as well if needed       
         }
