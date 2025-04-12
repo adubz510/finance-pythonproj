@@ -6,7 +6,7 @@ from app.models import db, Portfolio, Holding, Stock, Transaction
 holding_routes = Blueprint('holdings', __name__)
 
 # Get all holdings for a specific portfolio
-@holding_routes.route('/<int:portfolio_id>', methods=['GET'])
+@holding_routes.route('/', methods=['GET'])
 @login_required
 def get_holdings(portfolio_id):
     portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
@@ -17,7 +17,7 @@ def get_holdings(portfolio_id):
     return jsonify({'holdings': holdings}), 200
 
 # Buy stock (create or update a holding)
-@holding_routes.route('/<int:portfolio_id>/buy', methods=['POST'])
+@holding_routes.route('/buy', methods=['POST'])
 @login_required
 def buy_stock(portfolio_id):
     data = request.get_json()
@@ -36,8 +36,8 @@ def buy_stock(portfolio_id):
         return jsonify({'error': 'Stock not found'}), 404
     
     # Calculate the cost of the transaction
-    price_per_stock = stock.price
-    total_amount = price_per_stock * quantity
+    current_stock_price = stock.current_price
+    total_amount = current_stock_price * quantity
 
     # Check if the user has enough balance to buy the stock
     if portfolio.balance < total_amount:
@@ -64,7 +64,7 @@ def buy_stock(portfolio_id):
     transaction = Transaction(
         transaction_type='buy',
         quantity=quantity,
-        price_per_stock=price_per_stock,
+        current_stock_price=current_stock_price,
         total_amount=total_amount,
         portfolio_id=portfolio.id,
         stock_id=stock.id
@@ -76,7 +76,7 @@ def buy_stock(portfolio_id):
     return jsonify({'message': 'Stock purchased', 'holding': holding.to_dict()}), 200
 
 # Sell stock (decrease or delete holding)
-@holding_routes.route('/<int:portfolio_id>/sell', methods=['PUT'])
+@holding_routes.route('/sell', methods=['PUT'])
 @login_required
 def sell_stock(portfolio_id):
     data = request.get_json()
@@ -100,8 +100,8 @@ def sell_stock(portfolio_id):
         return jsonify({'error': 'Not enough shares to sell'}), 400
     
     # Calculate the cost of the transaction
-    price_per_stock = stock.price
-    total_amount = price_per_stock * quantity
+    current_stock_price = stock.current_price
+    total_amount = current_stock_price * quantity
 
     # Add the proceeds from the sale to the portfolio balance
     portfolio.balance += total_amount
@@ -114,7 +114,7 @@ def sell_stock(portfolio_id):
     transaction = Transaction(
         transaction_type='sell',
         quantity=quantity,
-        price_per_stock=price_per_stock,
+        current_stock_price=current_stock_price,
         total_amount=total_amount,
         portfolio_id=portfolio.id,
         stock_id=stock.id,

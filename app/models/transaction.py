@@ -1,5 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from datetime import datetime
+from . import Stock
 
 class Transaction(db.Model):
     __tablename__ = 'transactions'
@@ -15,7 +16,7 @@ class Transaction(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now)
 
     # Foreign keys
-    portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=False)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=True)
     stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), nullable=False)
     holding_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('holdings.id')), nullable=True)
 

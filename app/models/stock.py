@@ -19,10 +19,10 @@ class Stock(db.Model):
     holdings = relationship('Holding', back_populates='stock') 
 
 
-def to_dict(self):
-    return {
-        "id": self.id,
-        "symbol": self.symbol,
-        "name": self.name,
-        "current_price": self.current_price
-    }  #Custom instance method to convert stock object into a dictionary , will return object for sending to front end
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "symbol": self.symbol,
+            "name": self.name,
+            "current_price": self.current_price
+            }  #Custom instance method to convert stock object into a dictionary , will return object for sending to front end

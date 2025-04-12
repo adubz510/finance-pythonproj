@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import LoginFormPage from '../components/LoginFormPage';
 import SignupFormPage from '../components/SignupFormPage';
 import PortfolioPage from '../components/PortfolioPage/PortfolioPage';
+import PortfolioDetails from '../components/PortfolioDetails/PortfolioDetails';
 import Layout from './Layout';
 
 export const router = createBrowserRouter([
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
         path: "portfolio",
         element: <PortfolioPage />,
       },
+      {
+        path: "portfolios/:portfolioId",
+        element: <PortfolioDetails />
+      }
     ],
   },
 ]);

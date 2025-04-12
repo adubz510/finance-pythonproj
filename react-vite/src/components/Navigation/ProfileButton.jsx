@@ -53,7 +53,7 @@ function ProfileButton() {
               <li>{user.username}</li>
               <li>{user.email}</li>
               <li>
-                <button onClick={() => navigate("/portfolio")}> My Portfolio</button>
+                <button onClick={() => navigate("/portfolio")}> My Portfolio </button>
                 </li>
               <li>
                 <button onClick={logout}>Log Out</button>
