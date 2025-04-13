@@ -1,0 +1,9 @@
+
+.centered-text {
+    display: flex;
+    flex-direction: column;   /* Stack the text vertically */
+    justify-content: center;  /* Center vertically */
+    align-items: center;      /* Center horizontally */
+    height: 100vh;            /* Full height of the screen */
+    background-color: #f0f8ff; /* Optional background color */
+  }
