@@ -1,0 +1,14 @@
+.stock-card {
+    border: 1px solid #ccc;
+    padding: 16px;
+    text-align: left;
+    border-radius: 6px;
+    background-color: white;
+    color: black;
+    transition: 0.2s ease-in-out;
+    text-decoration: none;
+  }
+
+  .stock-card:hover {
+    background-color: #f3f3f3;
+  }

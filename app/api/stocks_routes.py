@@ -1,9 +1,14 @@
 # stocks_routes.py
 from flask import Blueprint, request, jsonify
 from app.models import db, Stock
-from sqlalchemy.orm import joinedload
+import os
+import requests
+from dotenv import load_dotenv
 
 stocks_routes = Blueprint('stocks', __name__)
+
+load_dotenv()
+ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 # Get all stocks
 @stocks_routes.route('/', methods=['GET'])
@@ -49,3 +54,25 @@ def create_stock():
     db.session.commit()
 
     return new_stock.to_dict(), 201
+
+# Real-time or historical stock data from Alpha Vantage
+@stocks_routes.route('/<symbol>/history')
+def get_stock_history(symbol):
+    timeframe = request.args.get('timeframe', 'TIME_SERIES_DAILY')
+    url = f'https://www.alphavantage.co/query?function={timeframe}&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
+
+    response = requests.get(url)
+    data = response.json()
+
+    # Parse the time series data
+    key = next((k for k in data if 'Time Series' in k), None)
+    if not key:
+        return jsonify({'error': 'Data not available'}), 400
+
+    time_series = data[key]
+    formatted_data = [
+        {'date': date, 'close': float(values['4. close'])}
+        for date, values in list(time_series.items())[:30]  # limit to last 30 points
+    ][::-1]  # Reverse to show oldest first
+
+    return jsonify(formatted_data)
