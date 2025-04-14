@@ -17,17 +17,22 @@ const Navigation = () => {
         />
         <span className="brand">Webull</span>
       </div>
-      <ul className="nav-links">
-        <li><NavLink to="/">Home</NavLink></li>
-        <li><NavLink to="/portfolio">Portfolio</NavLink></li>
-        <li><NavLink to="/stocks">Stocks</NavLink></li>
-        <li><NavLink to="/watchlist">Watchlist</NavLink></li>
-      </ul>
-        <div className="search-bar">
-          <input type="text" placeholder="Search..." />
-        </div>
-        <div className="auth-buttons">
-        <button className="login-btn">Login</button>
+      <div className="nav-middle">
+        <ul className="nav-links">
+          <li><NavLink to="/">Home</NavLink></li>
+          <li><NavLink to="/portfolio">Portfolio</NavLink></li>
+          <li><NavLink to="/stocks">Stocks</NavLink></li>
+          <li><NavLink to="/watchlist">Watchlist</NavLink></li>
+        </ul>
+      </div>
+      <div className="search-bar">
+        <input type="text" placeholder="Symbol/Name" />
+      </div>
+      <div className="auth1-btn">
+        <a href="/signup" className="signup-btn">Sign up</a>
+      </div>
+      <div className="auth2-btn">
+        <a href="/login" class="login-btn">Log in</a>
       </div>
     </nav>
   );
