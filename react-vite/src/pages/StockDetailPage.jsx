@@ -10,7 +10,7 @@ const StockDetailPage = () => {
   const [timeframe, setTimeframe] = useState('TIME_SERIES_DAILY'); // User-selected timeframe
   const [loading, setLoading] = useState(true); // Show loading spinner/message
   const [error, setError] = useState(null); // Capture API error messages
-
+  // const [stockSymbols, setStockSymbols] = useState([]);
   // Fetch stock price history when component mounts or timeframe changes
   useEffect(() => {
     setLoading(true);
@@ -32,10 +32,11 @@ const StockDetailPage = () => {
       });
   }, [symbol, timeframe]);
 
+
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Stock: {symbol.toUpperCase()}</h1>
-
+      {/* <h1>Stock: {stockSymbols.map((stock) => console.log(stock), stock.symbol)}</h1> */}
+      <h1>Stock: {symbol}</h1>
       {/* Dropdown for selecting timeframe */}
       <div style={{ margin: '15px 0' }}>
         <label style={{ marginRight: '10px' }}>Timeframe:</label>

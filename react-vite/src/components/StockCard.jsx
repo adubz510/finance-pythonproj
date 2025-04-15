@@ -1,5 +1,5 @@
 
-import './StockCard.css';
+// import './StockCard.css';
 import { Link } from 'react-router-dom';
 
 const StockCard = ({ stock }) => {
