@@ -1,15 +1,31 @@
+/* StockListPage.css */
+
 .stock-list-page {
-    padding: 20px;
-  }
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
 
-  .stock-list-page input {
-    padding: 10px;
-    width: 300px;
-    margin-bottom: 20px;
-  }
+.stock-list-page h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #4c4cff; /* matching your logo's purple */
+  margin-bottom: 20px;
+}
 
-  .stock-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-  }
+.stock-list-page input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  margin-bottom: 30px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stock-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}

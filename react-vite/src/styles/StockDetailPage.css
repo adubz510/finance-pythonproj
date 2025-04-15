@@ -1,17 +1,59 @@
-.stock-detail {
-    padding: 40px;
-  }
+.stock-detail-container {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
 
-  .stock-detail h1 {
-    margin-bottom: 10px;
-  }
+.stock-detail-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #4c4cff;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
-  .stock-detail button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #222;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+.stock-detail-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+#timeframe-select {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.stock-detail-loading {
+  font-style: italic;
+  color: #666;
+}
+
+.stock-detail-error {
+  color: red;
+  font-weight: 500;
+}
+
+.stock-price-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.current-price {
+  font-weight: bold;
+  color: #333;
+}
+
+.percent-change {
+  font-weight: bold;
+}
+
+.chart-section {
+  margin-top: 30px;
+}

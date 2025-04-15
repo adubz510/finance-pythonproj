@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from 'recharts'; // Recharts for visualizing stock data
-import '../styles/StockDetailPage.css';
+import '../styles/StockDetailPage.css'; // Imported stylesheet for styling
 
 const StockDetailPage = () => {
   const { symbol } = useParams(); // Get stock symbol from the URL
@@ -11,7 +11,8 @@ const StockDetailPage = () => {
   const [timeframe, setTimeframe] = useState('TIME_SERIES_DAILY'); // User-selected timeframe
   const [loading, setLoading] = useState(true); // Show loading spinner/message
   const [error, setError] = useState(null); // Capture API error messages
-  // const [stockSymbols, setStockSymbols] = useState([]);
+  // const [stockSymbols, setStockSymbols] = useState([]); // (unused) potentially for future symbol list dropdown
+
   // Fetch stock price history when component mounts or timeframe changes
   useEffect(() => {
     setLoading(true);
@@ -33,15 +34,16 @@ const StockDetailPage = () => {
       });
   }, [symbol, timeframe]);
 
-
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="stock-detail-container">
       {/* <h1>Stock: {stockSymbols.map((stock) => console.log(stock), stock.symbol)}</h1> */}
-      <h1>Stock: {symbol}</h1>
+      <h1 className="stock-detail-title">Stock: {symbol?.toUpperCase()}</h1>
+
       {/* Dropdown for selecting timeframe */}
-      <div style={{ margin: '15px 0' }}>
-        <label style={{ marginRight: '10px' }}>Timeframe:</label>
+      <div className="stock-detail-dropdown">
+        <label htmlFor="timeframe-select">Timeframe:</label>
         <select
+          id="timeframe-select"
           value={timeframe}
           onChange={(e) => setTimeframe(e.target.value)}
         >
@@ -52,12 +54,39 @@ const StockDetailPage = () => {
       </div>
 
       {/* Show loading or error message */}
-      {loading && <p>Loading stock data...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {loading && <p className="stock-detail-loading">Loading stock data...</p>}
+      {error && <p className="stock-detail-error">{error}</p>}
+
+      {/* Show current price and percent change only when history has enough data */}
+      {!loading && !error && history.length > 1 && (
+        <div className="stock-price-summary">
+          {/* Display the most recent close price (i.e., current price) */}
+          <p className="current-price">
+            Current Price: ${history[history.length - 1].close.toFixed(2)}
+          </p>
+
+          {/* Display % change from previous close to latest close, color-coded */}
+          <p
+            className="percent-change"
+            style={{
+              color:
+                history[history.length - 1].close > history[history.length - 2].close
+                  ? 'green'
+                  : 'red'
+            }}
+          >
+            Change: {(
+              ((history[history.length - 1].close - history[history.length - 2].close) /
+                history[history.length - 2].close) *
+              100
+            ).toFixed(2)}%
+          </p>
+        </div>
+      )}
 
       {/* If data is loaded successfully, render a line chart */}
       {!loading && !error && history.length > 0 && (
-        <div>
+        <div className="chart-section">
           <h3>Price Chart</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={history}>
