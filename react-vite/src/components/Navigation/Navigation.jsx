@@ -20,9 +20,7 @@ const Navigation = () => {
       <div className="nav-middle">
         <ul className="nav-links">
           <li><NavLink to="/">Home</NavLink></li>
-          <li><NavLink to="/portfolio">Portfolio</NavLink></li>
           <li><NavLink to="/stocks">Stocks</NavLink></li>
-          <li><NavLink to="/watchlist">Watchlist</NavLink></li>
         </ul>
       </div>
       <div className="search-bar">
