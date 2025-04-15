@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import StockCard from '../components/StockCard';
-// import './StockListPage.css';
+import '../styles/StockListPage.css';
 
 // StockListPage: Displays all stocks and supports live search by name or symbol
 const StockListPage = () => {

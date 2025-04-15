@@ -4,7 +4,7 @@ from app.models import db, Stock
 import os
 import requests
 from dotenv import load_dotenv
-
+import pprint
 stocks_routes = Blueprint('stocks', __name__)
 
 load_dotenv()
@@ -64,6 +64,7 @@ def get_stock_history(symbol):
     response = requests.get(url)
     data = response.json()
 
+    pprint.pprint(data)
     # Parse the time series data
     key = next((k for k in data if 'Time Series' in k), None)
     if not key:

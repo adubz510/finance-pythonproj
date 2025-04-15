@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from 'recharts'; // Recharts for visualizing stock data
+import '../styles/StockDetailPage.css';
 
 const StockDetailPage = () => {
   const { symbol } = useParams(); // Get stock symbol from the URL
