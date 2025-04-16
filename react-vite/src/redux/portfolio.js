@@ -25,6 +25,7 @@ const addMoney = (amount, portfolioId) => ({
   portfolioId
 });
 
+
 const addStock = (stock, quantity) => ({
   type: ADD_STOCK,
   stock,
@@ -120,6 +121,7 @@ export const thunkUpdateBalance = (portfolioId, amount, closeModal) => async (di
   }
 };
 
+
 export const thunkDeletePortfolio = (portfolioId) => async (dispatch) => {
   dispatch(setLoading(true)); // Start loading
   try {
@@ -214,6 +216,9 @@ export const thunkFetchWatchlist = () => async (dispatch) => {
 // Reducer
 const initialState = { 
   portfolios: [],
+  user: {
+    total_balance: 0,
+  },
   transactions: [],
   watchlist: [],
   loading: false,

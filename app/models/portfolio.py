@@ -13,8 +13,9 @@ class Portfolio(db.Model):
 
     user = db.relationship('User', back_populates='portfolios')
     holdings = db.relationship('Holding', back_populates='portfolio', cascade="all, delete-orphan", lazy='joined')
-    transactions = db.relationship('Transaction', back_populates='portfolio', cascade="save-update, merge, refresh-expire, expunge")
+    transactions = db.relationship('Transaction', back_populates='portfolio', cascade="all, delete-orphan")
 
+    
     def to_dict(self):
         return {
             'id': self.id,

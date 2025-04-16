@@ -9,7 +9,8 @@ const PortfolioPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const portfolios = useSelector((state) => state.portfolio.portfolios);
-  const { setModalContent, setModalVisible } = useModal(); // Modal hooks
+  const user = useSelector((state) => state.session.user);
+  const { setModalContent, setModalVisible } = useModal();
 
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
 
@@ -18,19 +19,26 @@ const PortfolioPage = () => {
   }, [dispatch]);
 
   const handleCreatePortfolio = () => {
-    setModalContent(<AddPortfolioModal />); //set the modal content
-    setModalVisible(true); // open the modal
+    setModalContent(<AddPortfolioModal />);
+    setModalVisible(true); 
     };
 
-  const handleDeletePortfolio = (portfolioId) => {
+  const handleDeletePortfolio = (portfolioId, portfolioBalance) => {
     if (window.confirm("Are you sure you want to delete this portfolio? All stocks will be sold.")) {
       dispatch(thunkDeletePortfolio(portfolioId));
+
+      setTotalBalance((prevBalance) => prevBalance + portfolioBalance);
     }
   };
 
+
+  const totalBalance = portfolios?.reduce((sum, p) => sum + p.balance, 0) ?? 0;
+
   return (
     <div>
-      <h1>Your Portfolios</h1>
+      <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
+      <p><strong> Total Balance:</strong> ${totalBalance.toFixed(2)} </p>
+
       <button onClick={handleCreatePortfolio}>Add Portfolio</button>
 
       {portfolios && portfolios.length > 0 ? (
@@ -59,6 +67,7 @@ const PortfolioPage = () => {
           <p>Balance: ${selectedPortfolio.balance}</p>
         </div>
       )}
+
     </div>
   );
 };

@@ -12,12 +12,13 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    total_balance = db.Column(db.Float, nullable=False, default=0.00)  # Add this field
 
     # Relationship to Portfolio (One-to-Many: A user can have multiple portfolios)
     portfolios = db.relationship('Portfolio', back_populates='user', cascade="all, delete-orphan", lazy="dynamic")
     watchlists = db.relationship('Watchlist', back_populates='user', cascade="all, delete-orphan")
 
-    
+
     @property
     def password(self):
         raise AttributeError("Password is not a readable attribute.")  # Prevent direct access
@@ -34,5 +35,7 @@ class User(db.Model, UserMixin):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'portfolios': [portfolio.to_dict() for portfolio in self.portfolios]  # Include portfolios in response
+            'portfolios': [portfolio.to_dict() for portfolio in self.portfolios],  # Include portfolios in response
+            'watchlists': [watchlist.to_dict() for watchlist in self.watchlists],
+            'total_balance': self.total_balance
         }

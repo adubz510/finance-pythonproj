@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app.models import db, Portfolio, Holding, Stock, Transaction
+from datetime import datetime
 
 portfolio_routes = Blueprint('portfolios', __name__)
 
@@ -57,10 +58,11 @@ def update_balance(portfolio_id):
     transaction = Transaction(
         transaction_type='add-money',
         quantity=0,
-        current_stock_price=None,
+        price_per_stock=0,
         total_amount=amount,
         portfolio_id=portfolio.id,
-        stock_id=None
+        stock_id=None,
+        # transaction_date=datetime.now()
     )
     db.session.add(transaction)
 

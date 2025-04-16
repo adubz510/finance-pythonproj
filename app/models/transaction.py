@@ -17,7 +17,7 @@ class Transaction(db.Model):
 
     # Foreign keys
     portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=True)
-    stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), nullable=False)
+    stock_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('stocks.id')), nullable=True)
     holding_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('holdings.id')), nullable=True)
 
     # Relationships

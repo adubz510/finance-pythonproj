@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkFetchPortfolio } from "../../redux/portfolio";
 import SellStockModal from "./SellStockModal";
+import AddMoneyModal from "./AddMoneyModal";
 
 const PortfolioDetails = () => {
   const { portfolioId } = useParams();
@@ -13,7 +14,9 @@ const PortfolioDetails = () => {
   const [holdingsWithPrices, setHoldingsWithPrices] = useState([]);
   const [selectedHolding, setSelectedHolding] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [amountToAdd, setAmountToAdd] = useState("");
+  const [showSellModal, setShowSellModal] = useState(false);
+  const [showAddMoneyModal, setShowAddMoneyModal] = useState(false);
+
 
   // Fetch portfolio data if not already loaded
   useEffect(() => {
@@ -74,6 +77,14 @@ const PortfolioDetails = () => {
     setSelectedHolding(null);
   };
 
+  const openAddMoneyModal = () => {
+    setShowAddMoneyModal(true);
+  };
+
+  const closeAddMoneyModal = () => {
+    setShowAddMoneyModal(false);
+  };
+
   const sellStock = async (holding, quantity) => {
     if (!holding || !holding.id) {
         console.error("Invalid holding provided:", holding);
@@ -102,13 +113,7 @@ const PortfolioDetails = () => {
     }
   };
 
-  const handleAddMoney = async () => {
-    const amount = parseFloat(amountToAdd);
-    if (isNaN(amount) || amount <= 0) {
-      alert("Please enter a valid amount greater than 0");
-      return;
-    }
-  
+  const addMoney = async (portfolioId, amount) => {
     try {
       const res = await fetch(`/api/portfolios/${portfolioId}/balance`, {
         method: "PUT",
@@ -117,13 +122,12 @@ const PortfolioDetails = () => {
         },
         body: JSON.stringify({ amount }),
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to add money");
       }
-  
-      setAmountToAdd(""); // Clear input
+
       await dispatch(thunkFetchPortfolio()); // Refresh portfolio data
     } catch (err) {
       console.error("Error adding money:", err);
@@ -160,7 +164,7 @@ const PortfolioDetails = () => {
         <p>No holdings in this portfolio.</p>
       )}
 
-      {showModal && (
+      {showSellModal && (
         <SellStockModal
           holdings={holdingsWithPrices}
           onClose={closeSellModal}
@@ -168,17 +172,17 @@ const PortfolioDetails = () => {
         />
       )}
 
-<div style={{ marginTop: "20px" }}>
-    <h3>Add Money to Balance</h3>
-    <input
-        type="number"
-        placeholder="Enter amount"
-        value={amountToAdd}
-        onChange={(e) => setAmountToAdd(e.target.value)}
-    />
-    <button onClick={handleAddMoney}>Add Money</button>
-</div>
+<div>
+        <button onClick={openAddMoneyModal}>Add Money</button>
+      </div>
 
+      {showAddMoneyModal && (
+        <AddMoneyModal
+          portfolioId={portfolioId}
+          onClose={closeAddMoneyModal}
+          onAddMoney={addMoney}
+        />
+      )}
     </div>
   );
 };
