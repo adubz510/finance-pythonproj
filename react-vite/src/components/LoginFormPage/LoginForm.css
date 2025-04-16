@@ -1,6 +1,7 @@
 .login-page {
     min-height: 90vh;
     background: linear-gradient(135deg, #819cfd, #0033cc);
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +52,6 @@
     font-weight: bold;
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s ease;
   }
 
   p {

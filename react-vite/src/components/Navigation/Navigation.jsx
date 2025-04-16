@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
-import logo from "/dist/assets/webull-logo.svg";
+import logo from "/src/webull-logo.svg";
 
 
 const Navigation = () => {
@@ -28,7 +28,7 @@ const Navigation = () => {
       </div>
       <div className="auth1-btn">
         <a href="/signup" className="signup-btn">Sign up</a>
-        <a href="/login" class="login-btn">Log in</a>
+        <a href="/login" className="login-btn">Log in</a>
       </div>
     </nav>
   );

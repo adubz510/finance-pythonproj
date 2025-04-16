@@ -1,6 +1,6 @@
 
 .webull-navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
   display: flex;
   justify-content: space-between;
@@ -10,6 +10,7 @@
   color: white;
   font-family: 'Segoe UI', sans-serif;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .brand {
@@ -61,6 +62,11 @@
   border: 1rem;
   outline: 1rem;
   font-size: 1rem;
+}
+
+.auth1-btn {
+  display: flex;
+  gap: 0.9rem; 
 }
 
 .login-btn {

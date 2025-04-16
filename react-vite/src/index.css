@@ -1,8 +1,12 @@
+body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 body {
-    
-    background-image: linear-gradient(rgba(0, 0, 255, 0.5), rgba(255, 255, 0, 0.5)), url("https://plus.unsplash.com/premium_photo-1681487769650-a0c3fbaed85a?q=80&w=2155&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
-    background-repeat: no-repeat;
-    background-size: 1500px ;
+    background-image: linear-gradient(rgba(0, 0, 255, 0.5), rgba(255, 255, 0, 0.5)), url("https://builtin.com/sites/www.builtin.com/files/2022-09/big-data-finance.jpg");
+    background-size: cover ;
 }
 
 .home-container {
@@ -23,7 +27,7 @@ body {
   }
   
   .home-container p {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     max-width: 600px;
     line-height: 1.5;
     color: #c8d6e5;
