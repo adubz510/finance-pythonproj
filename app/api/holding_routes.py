@@ -124,3 +124,53 @@ def sell_stock(portfolio_id):
 
     db.session.commit()
     return jsonify({'message': 'Stock sold', 'holding': holding.to_dict() if holding.quantity > 0 else None}), 200
+
+@holding_routes.route('/<int:holding_id>/sell', methods=['PATCH'])
+@login_required
+def sell_holding_by_id(portfolio_id, holding_id):
+    data = request.get_json()
+    quantity = data.get('quantity', 0)
+
+    print(f"[DEBUG] Sell request: quantity={quantity}, holding_id={holding_id}, portfolio_id={portfolio_id}")
+
+    if quantity <= 0:
+        return jsonify({'error': 'Invalid quantity'}), 400
+
+    holding = Holding.query.get(holding_id)
+
+    if not holding or holding.portfolio_id != portfolio_id or holding.portfolio.user_id != current_user.id:
+        return jsonify({'error': 'Holding not found or unauthorized'}), 404
+
+    if holding.quantity < quantity:
+        return jsonify({'error': 'Not enough shares to sell'}), 400
+
+    stock = holding.stock
+    current_price = stock.current_price
+    total_amount = current_price * quantity
+
+    holding.quantity -= quantity
+    portfolio = holding.portfolio
+    portfolio.balance += total_amount
+
+    if holding.quantity == 0:
+        db.session.delete(holding)
+
+    # Record the transaction
+    transaction = Transaction(
+        transaction_type='sell',
+        quantity=quantity,
+        price_per_stock=current_price,
+        total_amount=total_amount,
+        portfolio_id=portfolio.id,
+        stock_id=stock.id,
+        holding_id=holding_id
+    )
+    db.session.add(transaction)
+
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Stock sold',
+        'portfolio': portfolio.to_dict()
+    }), 200
+

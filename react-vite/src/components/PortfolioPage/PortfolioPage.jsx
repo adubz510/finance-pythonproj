@@ -8,7 +8,7 @@ import AddPortfolioModal from "./AddPortfolioModal";
 const PortfolioPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const portfolios = useSelector((state) => state.portfolio.portfolio);
+  const portfolios = useSelector((state) => state.portfolio.portfolios);
   const { setModalContent, setModalVisible } = useModal(); // Modal hooks
 
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
@@ -41,7 +41,7 @@ const PortfolioPage = () => {
               <li key={portfolio.id}>
                 <div>
                   <h3>{portfolio.name}</h3>
-                  <p>Balance: ${portfolio.balance}</p>
+                  <p>Balance: ${portfolio.balance.toFixed(2)}</p>
                   <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
                   <button onClick={() => handleDeletePortfolio(portfolio.id)}>Delete Portfolio</button>
                 </div>

@@ -1,4 +1,4 @@
-const SET_PORTFOLIO = "portfolio/setPortfolio";
+const SET_PORTFOLIOS = "portfolio/setPortfolios";
 const REMOVE_PORTFOLIO = "portfolio/removePortfolio";
 const ADD_MONEY = "portfolio/addMoney";
 const ADD_STOCK = "portfolio/addStock";
@@ -9,9 +9,9 @@ const SET_LOADING = "portfolio/setLoading"; // New action type for loading state
 const SET_ERROR = "portfolio/setError"; // New action type for errors
 
 // Action Creators
-const setPortfolio = (portfolio) => ({
-  type: SET_PORTFOLIO,
-  payload: portfolio,
+const setPortfolios = (portfolios) => ({
+  type: SET_PORTFOLIOS,
+  payload: portfolios,
 });
 
 const removePortfolio = (portfolioId) => ({
@@ -63,7 +63,7 @@ export const thunkFetchPortfolio = () => async (dispatch) => {
     const res = await fetch("/api/portfolios/");
     if (res.ok) {
       const data = await res.json();
-      dispatch(setPortfolio(data.portfolios));
+      dispatch(setPortfolios(data.portfolios));
     } else {
         throw new Error("Failed to fetch portfolio");
     }
@@ -86,7 +86,7 @@ export const thunkCreatePortfolio = (data) => async (dispatch) => {
     });
     if (res.ok) {
       const data = await res.json();
-      dispatch(setPortfolio(data.portfolio));
+      dispatch(setPortfolios(data.portfolio));
     } else {
         throw new Error("Failed to create portfolio");
     }
@@ -213,7 +213,7 @@ export const thunkFetchWatchlist = () => async (dispatch) => {
 
 // Reducer
 const initialState = { 
-  portfolio: [],
+  portfolios: [],
   transactions: [],
   watchlist: [],
   loading: false,
@@ -222,48 +222,53 @@ const initialState = {
 
 function portfolioReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_PORTFOLIO:
+    case SET_PORTFOLIOS:
         if (Array.isArray(action.payload)) {
-            return { ...state, portfolio: action.payload };
+            return { ...state, portfolios: action.payload };
         } else {
             return {
                 ...state,
-                portfolio: [...(state.portfolio || []), action.payload],
+                portfolios: [...(state.portfolios || []), action.payload],
                 };
         }
     case REMOVE_PORTFOLIO:
       return { 
         ...state, 
-        portfolio: state.portfolio.filter((p) => p.id !== action.payload) 
+        portfolios: state.portfolios.filter((p) => p.id !== action.payload) 
       };
     case ADD_MONEY:
       return { 
         ...state, 
-        portfolio: state.portfolio.map((p) =>
+        portfolios: state.portfolios.map((p) =>
             p.id === action.payload.id
               ? { ...p, balance: p.balance + action.amount }
               : p
           ),
         };
     case ADD_STOCK:
-      return {
-        ...state,
-        portfolio: {
-          ...state.portfolio,
-          holdings: [
-            ...state.portfolio.holdings,
-            { ...action.stock, quantity: action.quantity },
-          ],
-        },
-      };
+        return {
+            ...state,
+            portfolios: state.portfolios.map((p) => {
+            if (p.id === action.stock.portfolioId) {
+                return {
+                ...p,
+                holdings: [...(p.holdings || []), { ...action.stock, quantity: action.quantity }],
+                  };
+                }
+                return p;
+              }),
+            };
+          
     case REMOVE_STOCK:
-      return {
-        ...state,
-        portfolio: {
-          ...state.portfolio,
-          holdings: state.portfolio.holdings.filter((stock) => stock.id !== action.stockId),
-        },
-      };
+        return {
+            ...state,
+            portfolios: state.portfolios.map((p) => {
+            return {
+                ...p,
+                holdings: p.holdings?.filter((stock) => stock.id !== action.stockId) || [],
+                };
+              }),
+            };
     case SET_TRANSACTIONS:
       return { ...state, transactions: action.transactions };
     case SET_WATCHLIST:

@@ -28,7 +28,7 @@ def get_portfolio_by_id(portfolio_id):
 def create_portfolio():
     data = request.get_json()
     name = data.get('name', f"{current_user.username}'s Portfolio")  # Default to user's name if not provided
-    balance = data.get('balance', 0.00)  # Default balance is 1000.00 if not provided
+    balance = data.get('balance', 0.00)  # Default balance is 0.00 if not provided
 
     portfolio = Portfolio(user_id=current_user.id, name=name, balance=balance)
     db.session.add(portfolio)
@@ -36,7 +36,7 @@ def create_portfolio():
     
     return jsonify({'message': 'Portfolio created successfully', 'portfolio': portfolio.to_dict()}), 201
 
-# update balance of specific portfolio
+# update balance of specific portfolio (add money)
 @portfolio_routes.route('/<int:portfolio_id>/balance', methods=['PUT'])
 @login_required
 def update_balance(portfolio_id):
@@ -50,10 +50,23 @@ def update_balance(portfolio_id):
     if not isinstance(amount, (int, float)) or amount <= 0:
         return jsonify({'error': 'Invalid amount'}), 400
 
+    # Add the amount to the portfolio balance
     portfolio.balance += amount
+
+    # Record the transaction for adding money
+    transaction = Transaction(
+        transaction_type='add-money',
+        quantity=0,
+        current_stock_price=None,
+        total_amount=amount,
+        portfolio_id=portfolio.id,
+        stock_id=None
+    )
+    db.session.add(transaction)
+
     db.session.commit()
-    
-    return jsonify({'message': 'Balance updated successfully', 'portfolio': portfolio.to_dict()}), 200
+
+    return jsonify({'message': 'Money added to portfolio', 'portfolio': portfolio.to_dict()}), 200
 
 # delete portfolio (simulate selling all stocks before deletion)
 @portfolio_routes.route('/<int:portfolio_id>', methods=['DELETE'])
