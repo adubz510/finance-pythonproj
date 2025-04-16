@@ -1,5 +1,6 @@
 const SET_PORTFOLIOS = "portfolio/setPortfolios";
 const REMOVE_PORTFOLIO = "portfolio/removePortfolio";
+const SET_TOTAL_BALANCE = "portfolio/setTotalBalance";
 const ADD_MONEY = "portfolio/addMoney";
 const ADD_STOCK = "portfolio/addStock";
 const REMOVE_STOCK = "portfolio/removeStock";
@@ -18,6 +19,11 @@ const removePortfolio = (portfolioId) => ({
   type: REMOVE_PORTFOLIO,
   payload: portfolioId
 });
+
+const setTotalBalance = (totalBalance) => ({
+    type: SET_TOTAL_BALANCE,
+    payload: totalBalance
+  });
 
 const addMoney = (amount, portfolioId) => ({
   type: ADD_MONEY,
@@ -213,6 +219,31 @@ export const thunkFetchWatchlist = () => async (dispatch) => {
   }
 };
 
+export const thunkUpdateTotalBalance = (updatedBalance) => async (dispatch) => {
+    dispatch(setLoading(true)); // Start loading
+    try {
+      const res = await fetch('/api/users/update_balance', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ total_balance: updatedBalance }),
+      });
+  
+      if (res.ok) {
+        const user = await res.json();
+        dispatch(setTotalBalance(user.total_balance)); // Update the total_balance in Redux state
+      } else {
+        throw new Error("Failed to update total balance");
+      }
+    } catch (error) {
+      dispatch(setError(error.message));
+    } finally {
+      dispatch(setLoading(false)); // Stop loading
+    }
+  };
+  
+
 // Reducer
 const initialState = { 
   portfolios: [],
@@ -241,6 +272,14 @@ function portfolioReducer(state = initialState, action) {
         ...state, 
         portfolios: state.portfolios.filter((p) => p.id !== action.payload) 
       };
+    case SET_TOTAL_BALANCE:
+      return {
+        ...state,
+        user: {
+        ...state.user,
+        total_balance: action.payload
+    }
+  };
     case ADD_MONEY:
       return { 
         ...state, 

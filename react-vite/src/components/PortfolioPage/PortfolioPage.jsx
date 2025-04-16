@@ -27,7 +27,8 @@ const PortfolioPage = () => {
     if (window.confirm("Are you sure you want to delete this portfolio? All stocks will be sold.")) {
       dispatch(thunkDeletePortfolio(portfolioId));
 
-      setTotalBalance((prevBalance) => prevBalance + portfolioBalance);
+      const updatedTotalBalance = user.total_balance + portfolioBalance;
+      dispatch(thunkUpdateTotalBalance(updatedTotalBalance))
     }
   };
 
