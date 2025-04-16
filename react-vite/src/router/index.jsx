@@ -9,7 +9,15 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1></h1>,
+        element: 
+        <div className="home-container">
+        <h1>TRADE <br /> CRYPTO FUTURES</h1>
+        <p>
+        Leverage the power of crypto futures trading on Webull. Diversify your portfolio<br /> or 
+        leverage cryptocurrency market movements with our seamless, low-cost futures platform.
+        </p>
+        <button>Get Started</button>
+        </div>
       },
       {
         path: "login",

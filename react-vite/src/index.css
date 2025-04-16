@@ -1,1 +1,41 @@
-/* TODO: Add sitewide styles */
+body {
+    
+    background-image: linear-gradient(rgba(0, 0, 255, 0.5), rgba(255, 255, 0, 0.5)), url("https://plus.unsplash.com/premium_photo-1681487769650-a0c3fbaed85a?q=80&w=2155&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-repeat: no-repeat;
+    background-size: 1500px ;
+}
+
+.home-container {
+    color: white;
+    padding: 0rem 3rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  
+  .home-container h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  
+  .home-container p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    line-height: 1.5;
+    color: #c8d6e5;
+    margin-bottom: 2rem;
+  }
+  
+  button {
+    background-color: #1f80e4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }

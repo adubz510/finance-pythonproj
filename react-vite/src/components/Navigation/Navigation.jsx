@@ -28,8 +28,6 @@ const Navigation = () => {
       </div>
       <div className="auth1-btn">
         <a href="/signup" className="signup-btn">Sign up</a>
-      </div>
-      <div className="auth2-btn">
         <a href="/login" class="login-btn">Log in</a>
       </div>
     </nav>
