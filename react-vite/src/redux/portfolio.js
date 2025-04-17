@@ -5,6 +5,7 @@ const ADD_STOCK = "portfolio/addStock";
 const REMOVE_STOCK = "portfolio/removeStock";
 const SET_TRANSACTIONS = "portfolio/setTransactions";
 const SET_WATCHLIST = "portfolio/setWatchlist";
+const UPDATE_USER_BALANCE = "portfolio/updateUserBalance";
 const SET_LOADING = "portfolio/setLoading"; // New action type for loading state
 const SET_ERROR = "portfolio/setError"; // New action type for errors
 
@@ -46,6 +47,11 @@ const setWatchlist = (watchlist) => ({
   type: SET_WATCHLIST,
   watchlist,
 });
+
+const updateUserBalance = (newBalance) => ({
+    type: UPDATE_USER_BALANCE,
+    payload: newBalance,
+  });
 
 const setLoading = (loading) => ({
   type: SET_LOADING,
@@ -127,7 +133,9 @@ export const thunkDeletePortfolio = (portfolioId) => async (dispatch) => {
   try {
     const res = await fetch(`/api/portfolios/${portfolioId}`, { method: "DELETE" });
     if (res.ok) {
+      const data = await res.json();
       dispatch(removePortfolio(portfolioId));
+      dispatch(updateUserBalance(data.total_balance));
     } else {
       throw new Error("Failed to delete portfolio");
     }
@@ -273,6 +281,14 @@ function portfolioReducer(state = initialState, action) {
                 holdings: p.holdings?.filter((stock) => stock.id !== action.stockId) || [],
                 };
               }),
+            };
+    case UPDATE_USER_BALANCE:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    total_balance: action.payload
+                  }
             };
     case SET_TRANSACTIONS:
       return { ...state, transactions: action.transactions };

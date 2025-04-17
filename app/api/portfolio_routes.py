@@ -99,9 +99,9 @@ def delete_portfolio(portfolio_id):
             holding_id=holding.id
         )
         db.session.add(transaction)
-
-        # Remove the holding
         db.session.delete(holding)
+
+    current_user.total_balance += portfolio.balance
 
     # Unlink transactions before deleting portfolio
     for transaction in portfolio.transactions:
@@ -111,4 +111,8 @@ def delete_portfolio(portfolio_id):
     db.session.delete(portfolio)
     db.session.commit()
 
-    return jsonify({'message': 'Portfolio deleted and holdings sold'}), 200
+    return jsonify({
+        'message': 'Portfolio deleted and holdings sold',
+        'portfolioId': portfolio_id,
+        'total_balance': current_user.total_balance
+    }), 200

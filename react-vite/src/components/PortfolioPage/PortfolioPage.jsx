@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { thunkFetchPortfolio, thunkUpdateBalance, thunkDeletePortfolio } from "../../redux/portfolio";
+import { thunkFetchPortfolio, thunkDeletePortfolio } from "../../redux/portfolio";
+import { thunkFetchUserBalance } from "../../redux/user";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import AddPortfolioModal from "./AddPortfolioModal";
+import DeletePortfolioModal from "./DeletePortfolioModal";
 
 const PortfolioPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const portfolios = useSelector((state) => state.portfolio.portfolios);
   const user = useSelector((state) => state.session.user);
+  const userBalance = useSelector((state) => state.user.balance)
   const { setModalContent, setModalVisible } = useModal();
 
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
 
   useEffect(() => {
     dispatch(thunkFetchPortfolio());
+    dispatch(thunkFetchUserBalance());
   }, [dispatch]);
 
   const handleCreatePortfolio = () => {
@@ -23,13 +27,10 @@ const PortfolioPage = () => {
     setModalVisible(true); 
     };
 
-  const handleDeletePortfolio = (portfolioId, portfolioBalance) => {
-    if (window.confirm("Are you sure you want to delete this portfolio? All stocks will be sold.")) {
-      dispatch(thunkDeletePortfolio(portfolioId));
-
-      setTotalBalance((prevBalance) => prevBalance + portfolioBalance);
+  const handleDeletePortfolio = (portfolioId) => {
+    setModalContent(<DeletePortfolioModal portfolio={portfolioId} />);
+    setModalVisible(true);
     }
-  };
 
 
   const totalBalance = portfolios?.reduce((sum, p) => sum + p.balance, 0) ?? 0;
@@ -37,7 +38,8 @@ const PortfolioPage = () => {
   return (
     <div>
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
-      <p><strong> Total Balance:</strong> ${totalBalance.toFixed(2)} </p>
+      <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
+      <p><strong> Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)} </p>
 
       <button onClick={handleCreatePortfolio}>Add Portfolio</button>
 
@@ -51,7 +53,7 @@ const PortfolioPage = () => {
                   <h3>{portfolio.name}</h3>
                   <p>Balance: ${portfolio.balance.toFixed(2)}</p>
                   <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
-                  <button onClick={() => handleDeletePortfolio(portfolio.id)}>Delete Portfolio</button>
+                  <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
                 </div>
               </li>
             ))}

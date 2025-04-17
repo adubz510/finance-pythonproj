@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { thunkFetchPortfolio } from "../../redux/portfolio";
 import SellStockModal from "./SellStockModal";
 import AddMoneyModal from "./AddMoneyModal";
+import "./PortfolioDetails.css";
 
 const PortfolioDetails = () => {
   const { portfolioId } = useParams();
@@ -15,6 +16,8 @@ const PortfolioDetails = () => {
   const [selectedHolding, setSelectedHolding] = useState(null);
   const [showSellModal, setShowSellModal] = useState(false);
   const [showAddMoneyModal, setShowAddMoneyModal] = useState(false);
+  const [sellSuccessMessage, setSellSuccessMessage] = useState("");
+
 
 
   // Fetch portfolio data if not already loaded
@@ -107,6 +110,13 @@ const PortfolioDetails = () => {
 
       await dispatch(thunkFetchPortfolio());
       closeSellModal();
+
+      setSellSuccessMessage(`Sold ${quantity} share(s) of ${holding.stock.symbol} successfully!`);
+
+      setTimeout(() => {
+        setSellSuccessMessage("");
+        }, 3000);
+
     } catch (err) {
       console.error("Error selling stock:", err);
     }
@@ -142,6 +152,12 @@ const PortfolioDetails = () => {
       <h1>{portfolio.name}</h1>
       <p>Balance: ${portfolio.balance.toFixed(2)}</p>
       </div>
+
+      {sellSuccessMessage && (
+  <div className="success-message">
+    {sellSuccessMessage}
+  </div>
+        )}
 
       <h2>Holdings</h2>
       {holdingsWithPrices.length > 0 ? (
