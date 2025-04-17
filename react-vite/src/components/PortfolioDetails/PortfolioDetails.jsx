@@ -13,7 +13,6 @@ const PortfolioDetails = () => {
 
   const [holdingsWithPrices, setHoldingsWithPrices] = useState([]);
   const [selectedHolding, setSelectedHolding] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [showSellModal, setShowSellModal] = useState(false);
   const [showAddMoneyModal, setShowAddMoneyModal] = useState(false);
 
@@ -69,11 +68,11 @@ const PortfolioDetails = () => {
   }, [portfolio]);
 
   const openSellModal = () => {
-    setShowModal(true);
+    setShowSellModal(true);
   };
 
   const closeSellModal = () => {
-    setShowModal(false);
+    setShowSellModal(false);
     setSelectedHolding(null);
   };
 
