@@ -1,6 +1,7 @@
+import { setTotalBalance } from "./session"
+
 const SET_PORTFOLIOS = "portfolio/setPortfolios";
 const REMOVE_PORTFOLIO = "portfolio/removePortfolio";
-const SET_TOTAL_BALANCE = "portfolio/setTotalBalance";
 const ADD_MONEY = "portfolio/addMoney";
 const ADD_STOCK = "portfolio/addStock";
 const REMOVE_STOCK = "portfolio/removeStock";
@@ -19,11 +20,6 @@ const removePortfolio = (portfolioId) => ({
   type: REMOVE_PORTFOLIO,
   payload: portfolioId
 });
-
-const setTotalBalance = (totalBalance) => ({
-    type: SET_TOTAL_BALANCE,
-    payload: totalBalance
-  });
 
 const addMoney = (amount, portfolioId) => ({
   type: ADD_MONEY,
@@ -129,20 +125,21 @@ export const thunkUpdateBalance = (portfolioId, amount, closeModal) => async (di
 
 
 export const thunkDeletePortfolio = (portfolioId) => async (dispatch) => {
-  dispatch(setLoading(true)); // Start loading
-  try {
-    const res = await fetch(`/api/portfolios/${portfolioId}`, { method: "DELETE" });
+    const res = await fetch(`/api/portfolios/${portfolioId}`, {
+      method: "DELETE"
+    });
+  
     if (res.ok) {
+      const data = await res.json(); // contains total_balance
+      console.log(data)
       dispatch(removePortfolio(portfolioId));
+      dispatch(setTotalBalance(data.total_balance))
+      return data;
     } else {
-      throw new Error("Failed to delete portfolio");
+      const error = await res.json();
+      throw new Error(error.message || "Failed to delete portfolio");
     }
-  } catch (error) {
-        dispatch(setError(error.message));
-  } finally {
-        dispatch(setLoading(false)); // Stop loading
-  }
-};
+  };
 
 // Adding/removing stocks in the portfolio
 export const thunkAddStockToPortfolio = (stock, quantity) => async (dispatch) => {
@@ -219,37 +216,9 @@ export const thunkFetchWatchlist = () => async (dispatch) => {
   }
 };
 
-export const thunkUpdateTotalBalance = (updatedBalance) => async (dispatch) => {
-    dispatch(setLoading(true)); // Start loading
-    try {
-      const res = await fetch('/api/users/update_balance', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ total_balance: updatedBalance }),
-      });
-  
-      if (res.ok) {
-        const user = await res.json();
-        dispatch(setTotalBalance(user.total_balance)); // Update the total_balance in Redux state
-      } else {
-        throw new Error("Failed to update total balance");
-      }
-    } catch (error) {
-      dispatch(setError(error.message));
-    } finally {
-      dispatch(setLoading(false)); // Stop loading
-    }
-  };
-  
-
 // Reducer
 const initialState = { 
   portfolios: [],
-  user: {
-    total_balance: 0,
-  },
   transactions: [],
   watchlist: [],
   loading: false,
@@ -272,14 +241,6 @@ function portfolioReducer(state = initialState, action) {
         ...state, 
         portfolios: state.portfolios.filter((p) => p.id !== action.payload) 
       };
-    case SET_TOTAL_BALANCE:
-      return {
-        ...state,
-        user: {
-        ...state.user,
-        total_balance: action.payload
-    }
-  };
     case ADD_MONEY:
       return { 
         ...state, 

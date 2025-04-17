@@ -13,8 +13,6 @@ class Holding(db.Model):
     quantity = db.Column(db.Float, nullable=False, default=0)
 
     # Foreign key to Portfolio
-    portfolio_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('portfolios.id')), nullable=False)
-
     portfolio = db.relationship('Portfolio', back_populates='holdings')
     stock = db.relationship('Stock', back_populates='holdings')
     transactions = db.relationship('Transaction', back_populates='holding', cascade="all, delete-orphan")

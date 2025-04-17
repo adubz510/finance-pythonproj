@@ -1,9 +1,15 @@
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
+const SET_TOTAL_BALANCE = "session/SET_TOTAL_BALANCE";
 
 const setUser = (user) => ({
   type: SET_USER,
   payload: user
+});
+
+const setTotalBalance = (newBalance) => ({
+  type: SET_TOTAL_BALANCE,
+  payload: newBalance,
 });
 
 const removeUser = () => ({
@@ -63,14 +69,46 @@ export const thunkLogout = () => async (dispatch) => {
   dispatch(removeUser());
 };
 
+export const thunkUpdateTotalBalance = (newBalance) => async (dispatch) => {
+  try {
+    const res = await fetch("/api/users/update_balance", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ total_balance: newBalance }),
+    });
+
+    if (res.ok) {
+      const updatedUser = await res.json();
+      dispatch(setTotalBalance(updatedUser.total_balance));
+    } else {
+      const errData = await res.json();
+      throw new Error(errData.error || "Failed to update total balance");
+    }
+  } catch (error) {
+    console.error("Balance update failed:", error);
+  }
+};
+
+
 const initialState = { user: null };
 
 function sessionReducer(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return { ...state, user: action.payload };
+    case SET_TOTAL_BALANCE:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          total_balance: action.payload,
+        },
+      };
     case REMOVE_USER:
       return { ...state, user: null };
+
     default:
       return state;
   }

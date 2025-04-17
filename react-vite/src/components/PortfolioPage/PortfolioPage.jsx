@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { thunkFetchPortfolio, thunkUpdateBalance, thunkDeletePortfolio } from "../../redux/portfolio";
+import { thunkFetchPortfolio, thunkDeletePortfolio } from "../../redux/portfolio";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import AddPortfolioModal from "./AddPortfolioModal";
@@ -9,12 +9,14 @@ const PortfolioPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const portfolios = useSelector((state) => state.portfolio.portfolios);
+  const portfolioDeleted = useSelector(state => state.portfolios.allPortfolios);
   const user = useSelector((state) => state.session.user);
   const { setModalContent, setModalVisible } = useModal();
 
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
 
   useEffect(() => {
+    console.log("Portfolios after update:", portfolios)
     dispatch(thunkFetchPortfolio());
   }, [dispatch]);
 
@@ -23,12 +25,9 @@ const PortfolioPage = () => {
     setModalVisible(true); 
     };
 
-  const handleDeletePortfolio = (portfolioId, portfolioBalance) => {
+  const handleDeletePortfolio = (portfolioId) => {
     if (window.confirm("Are you sure you want to delete this portfolio? All stocks will be sold.")) {
       dispatch(thunkDeletePortfolio(portfolioId));
-
-      const updatedTotalBalance = user.total_balance + portfolioBalance;
-      dispatch(thunkUpdateTotalBalance(updatedTotalBalance))
     }
   };
 
@@ -38,7 +37,8 @@ const PortfolioPage = () => {
   return (
     <div>
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
-      <p><strong> Total Balance:</strong> ${totalBalance.toFixed(2)} </p>
+      <p><strong>{user.username}'s Balance:</strong> ${user.total_balance?.toFixed(2)}</p>
+      <p><strong> Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)} </p>
 
       <button onClick={handleCreatePortfolio}>Add Portfolio</button>
 
@@ -50,7 +50,7 @@ const PortfolioPage = () => {
               <li key={portfolio.id}>
                 <div>
                   <h3>{portfolio.name}</h3>
-                  <p>Balance: ${portfolio.balance.toFixed(2)}</p>
+                  <p>Balance: ${portfolio.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
                   <button onClick={() => handleDeletePortfolio(portfolio.id)}>Delete Portfolio</button>
                 </div>

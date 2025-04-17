@@ -23,12 +23,12 @@ def seed():
         # command, which will  truncate all tables prefixed with 
         # the schema name (see comment in users.py undo_users function).
         # Make sure to add all your other model's undo functions below
-        undo_users()
-        undo_portfolios()
-        undo_holdings()
-        undo_stocks()
         undo_transactions()
+        undo_holdings()
         undo_watchlists()
+        undo_portfolios()
+        undo_stocks()
+        undo_users()
     seed_users()
     seed_portfolios()
     seed_stocks()
@@ -41,10 +41,10 @@ def seed():
 # Creates the `flask seed undo` command
 @seed_commands.command('undo')
 def undo():
+    undo_transactions()      # Depends on holdings, portfolios, stocks
+    undo_holdings()          # Depends on portfolios, stocks
+    undo_watchlists()        # Depends on users and includes WatchlistStock
+    undo_portfolios()        # Depends on users
+    undo_stocks()            # Referenced by holdings, transactions, and watchlists
     undo_users()
-    undo_portfolios()
-    undo_holdings()
-    undo_stocks()
-    undo_transactions()
-    undo_watchlists()
     # Add other undo functions here
