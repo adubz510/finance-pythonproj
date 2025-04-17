@@ -16,7 +16,6 @@ def get_holdings(portfolio_id):
     holdings = [holding.to_dict() for holding in portfolio.holdings]
     return jsonify({'holdings': holdings}), 200
 
-# Buy stock (create or update a holding)
 @holding_routes.route('/buy', methods=['POST'])
 @login_required
 def buy_stock(portfolio_id):
@@ -46,15 +45,17 @@ def buy_stock(portfolio_id):
     # Deduct the cost from the portfolio balance
     portfolio.balance -= total_amount
 
-    # check if user already has stock in holdings
+    # Check if the stock already exists in holdings
     holding = Holding.query.filter_by(portfolio_id=portfolio.id, stock_id=stock.id).first()
 
     if holding:
+        # If the stock is already in the portfolio, update the quantity
         holding.quantity += quantity
     else:
+        # If the stock is not in the portfolio, create a new holding
         holding = Holding(
             portfolio_id=portfolio.id,
-            stock_symbol=symbol.upper(),
+            stock_symbol=stock.symbol,
             stock_id=stock.id,
             quantity=quantity
         )
@@ -71,8 +72,9 @@ def buy_stock(portfolio_id):
     )
     db.session.add(transaction)
 
-
+    # Commit the changes to the database
     db.session.commit()
+
     return jsonify({'message': 'Stock purchased', 'holding': holding.to_dict()}), 200
 
 # Sell stock (decrease or delete holding)
@@ -174,3 +176,19 @@ def sell_holding_by_id(portfolio_id, holding_id):
         'portfolio': portfolio.to_dict()
     }), 200
 
+@holding_routes.route('/<string:symbol>', methods=['GET'])
+@login_required
+def get_holding_by_symbol(portfolio_id, symbol):
+    portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
+    if not portfolio:
+        return jsonify({'error': 'Portfolio not found'}), 404
+
+    stock = Stock.query.filter_by(symbol=symbol.upper()).first()
+    if not stock:
+        return jsonify({'error': 'Stock not found'}), 404
+
+    holding = Holding.query.filter_by(portfolio_id=portfolio.id, stock_id=stock.id).first()
+    if not holding:
+        return jsonify({'message': 'Holding not found'}), 404
+
+    return jsonify(holding.to_dict()), 200

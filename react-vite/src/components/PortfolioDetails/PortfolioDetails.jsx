@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkFetchPortfolio } from "../../redux/portfolio";
+import { thunkFetchUserBalance } from "../../redux/user";
 import SellStockModal from "./SellStockModal";
 import AddMoneyModal from "./AddMoneyModal";
+import BuyStockModal from "./BuyStockModal"
 import "./PortfolioDetails.css";
 
 const PortfolioDetails = () => {
@@ -11,14 +13,22 @@ const PortfolioDetails = () => {
   const dispatch = useDispatch();
   const portfolios = useSelector((state) => state.portfolio.portfolios);
   const portfolio = portfolios?.find((p) => p.id === parseInt(portfolioId)) ?? null;
+  const user = useSelector((state) => state.session.user);
+  const userBalance = useSelector((state) => state.user.balance)
+
 
   const [holdingsWithPrices, setHoldingsWithPrices] = useState([]);
   const [selectedHolding, setSelectedHolding] = useState(null);
   const [showSellModal, setShowSellModal] = useState(false);
   const [showAddMoneyModal, setShowAddMoneyModal] = useState(false);
   const [sellSuccessMessage, setSellSuccessMessage] = useState("");
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [buySuccessMessage, setBuySuccessMessage] = useState("");
 
-
+  
+  useEffect(() => {
+    if (user) dispatch(thunkFetchUserBalance());
+  }, [dispatch, user]);
 
   // Fetch portfolio data if not already loaded
   useEffect(() => {
@@ -86,6 +96,13 @@ const PortfolioDetails = () => {
   const closeAddMoneyModal = () => {
     setShowAddMoneyModal(false);
   };
+  const openBuyModal = () => {
+    setShowBuyModal(true);
+  };
+  const closeBuyModal = () => {
+    setShowBuyModal(false);
+  };
+
 
   const sellStock = async (holding, quantity) => {
     if (!holding || !holding.id) {
@@ -144,18 +161,59 @@ const PortfolioDetails = () => {
     }
   };
 
+  const buyStock = async (symbol, quantity) => {
+    try {
+      const res = await fetch(`/api/portfolio/${portfolioId}/holdings/buy`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ symbol, quantity }),
+      });
+  
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to buy stock");
+  
+      await dispatch(thunkFetchPortfolio());
+      closeBuyModal();
+      setBuySuccessMessage(`Bought ${quantity} share(s) of ${symbol.toUpperCase()} successfully!`);
+      setTimeout(() => setBuySuccessMessage(""), 3000);
+    } catch (err) {
+      console.error("Buy failed:", err);
+      alert(err.message || "Failed to buy stock");
+    }
+  };
+
+  const stockPrices = {};
+    holdingsWithPrices.forEach((h) => {
+    if (h.stock && h.stock.symbol) {
+        stockPrices[h.stock.symbol] = h.current_price || 0;
+        }
+    });
+
+  
+
+
+
   if (!portfolio) return <p>Loading portfolio...</p>;
 
   return (
     <div>
         <div>
       <h1>{portfolio.name}</h1>
+      <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
       <p>Balance: ${portfolio.balance.toFixed(2)}</p>
       </div>
 
       {sellSuccessMessage && (
   <div className="success-message">
     {sellSuccessMessage}
+  </div>
+        )}
+
+      {buySuccessMessage && (
+  <div className="success-message">
+    {buySuccessMessage}
   </div>
         )}
 
@@ -170,14 +228,19 @@ const PortfolioDetails = () => {
              
             </li>
           ))}
-          <button onClick={() => openSellModal()}>
-        Sell Stocks
-       </button>
+    
         </ul>
-         
          ) : (
         <p>No holdings in this portfolio.</p>
       )}
+
+    <div className="action-buttons">
+        <button onClick={openSellModal}>Sell Stocks</button>
+        <button onClick={openBuyModal}>Buy Stocks</button>
+        <button onClick={openAddMoneyModal}>Add Money</button>
+    </div>
+
+
 
       {showSellModal && (
         <SellStockModal
@@ -187,8 +250,17 @@ const PortfolioDetails = () => {
         />
       )}
 
+      {showBuyModal && (
+        <BuyStockModal
+            portfolioStocks={holdingsWithPrices}
+            onClose={closeBuyModal}
+            onBuy={buyStock}
+            balance={portfolio.balance}
+            stockPrices={stockPrices}
+        />
+      )}
+
 <div>
-        <button onClick={openAddMoneyModal}>Add Money</button>
       </div>
 
       {showAddMoneyModal && (
