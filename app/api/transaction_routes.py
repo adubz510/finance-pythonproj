@@ -8,7 +8,8 @@ transaction_routes = Blueprint('transactions', __name__)
 # Get all transactions for a user's portfolio
 @transaction_routes.route('/', methods=['GET'])
 @login_required
-def get_transactions(portfolio_id):
+def get_transactions():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
@@ -20,7 +21,8 @@ def get_transactions(portfolio_id):
 # Order a stock (buy or sell), optionally with a future scheduled time
 @transaction_routes.route('/order', methods=['POST'])
 @login_required
-def order_stock(portfolio_id):
+def order_stock():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     data = request.get_json()
     transaction_type = data.get('transaction_type')  # 'buy' or 'sell'
     symbol = data.get('symbol')

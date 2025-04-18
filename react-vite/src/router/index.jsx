@@ -29,10 +29,6 @@ export const router = createBrowserRouter([
         path: "portfolios/:portfolioId",
         element: <PortfolioDetails />
       },
-      {
-        path: "portfolios/:portfolioId/balance",
-        element: <PortfolioDetails/>
-      }
     ],
   },
 ]);

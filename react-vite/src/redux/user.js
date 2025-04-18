@@ -15,6 +15,7 @@ export const thunkFetchUserBalance = () => async (dispatch) => {
 };
 
 export const thunkAddToUserBalance = (amount) => async (dispatch) => {
+    console.log("Dispatching balance update:", amount);
     const response = await fetch('/api/users/me/balance', {
       method: 'PUT',
       headers: {

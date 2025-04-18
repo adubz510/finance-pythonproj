@@ -24,18 +24,43 @@ const PortfolioDetails = () => {
   const [sellSuccessMessage, setSellSuccessMessage] = useState("");
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [buySuccessMessage, setBuySuccessMessage] = useState("");
+  const [allStocks, setAllStocks] = useState([]);
+  const [availableStockPrices, setAvailableStockPrices] = useState({});
+
+
+  useEffect(() => {
+    if (!portfolio) {
+      dispatch(thunkFetchPortfolio());
+    }
+  }, [dispatch, portfolio]);
+
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const res = await fetch('/api/stocks');
+        const data = await res.json();
+        setAllStocks(data);
+  
+        // Set prices for validation
+        const pricesMap = {};
+        data.forEach((stock) => {
+          pricesMap[stock.symbol] = stock.current_price;
+        });
+        setAvailableStockPrices(pricesMap);
+      } catch (err) {
+        console.error("Failed to load stocks", err);
+      }
+    };
+  
+    fetchStocks();
+  }, []);
 
   
   useEffect(() => {
     if (user) dispatch(thunkFetchUserBalance());
   }, [dispatch, user]);
 
-  // Fetch portfolio data if not already loaded
-  useEffect(() => {
-    if (!portfolio) {
-      dispatch(thunkFetchPortfolio());
-    }
-  }, [dispatch, portfolio]);
 
   // Fetch current prices for holdings
   useEffect(() => {
@@ -80,6 +105,14 @@ const PortfolioDetails = () => {
     fetchPrices();
   }, [portfolio]);
 
+   // Calculate the total value of all stocks owned
+  const calculateTotalStockValue = () => {
+    return holdingsWithPrices.reduce((total, holding) => {
+      const stockValue = holding.current_price ? holding.current_price * holding.quantity : 0;
+      return total + stockValue;
+    }, 0);
+  };
+
   const openSellModal = () => {
     setShowSellModal(true);
   };
@@ -111,7 +144,8 @@ const PortfolioDetails = () => {
     }
 
     try {
-      const res = await fetch(`/api/portfolios/${portfolioId}/holdings/${holding.id}/sell`, {
+        console.log("Selling holding:", holding, "quantity:", quantity);
+      const res = await fetch(`/api/holdings/${holding.id}/sell?portfolio_id=${holding.portfolio_id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -126,6 +160,7 @@ const PortfolioDetails = () => {
       }
 
       await dispatch(thunkFetchPortfolio());
+      await dispatch(thunkFetchUserBalance());
       closeSellModal();
 
       setSellSuccessMessage(`Sold ${quantity} share(s) of ${holding.stock.symbol} successfully!`);
@@ -139,9 +174,9 @@ const PortfolioDetails = () => {
     }
   };
 
-  const addMoney = async (portfolioId, amount) => {
+  const addMoney = async (amount, portfolioId) => {
     try {
-      const res = await fetch(`/api/portfolios/${portfolioId}/balance`, {
+      const res = await fetch(`/api/portfolios/balance?portfolio_id=${portfolioId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -155,6 +190,7 @@ const PortfolioDetails = () => {
       }
 
       await dispatch(thunkFetchPortfolio()); // Refresh portfolio data
+      closeAddMoneyModal();
     } catch (err) {
       console.error("Error adding money:", err);
       alert(err.message);
@@ -163,7 +199,7 @@ const PortfolioDetails = () => {
 
   const buyStock = async (symbol, quantity) => {
     try {
-      const res = await fetch(`/api/portfolio/${portfolioId}/holdings/buy`, {
+      const res = await fetch(`/api/holdings/buy?portfolio_id=${portfolioId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -197,12 +233,15 @@ const PortfolioDetails = () => {
 
   if (!portfolio) return <p>Loading portfolio...</p>;
 
+  const totalStockValue = calculateTotalStockValue();
+  const totalPortfolioValue = (portfolio.balance || 0) + totalStockValue;
+
   return (
     <div>
         <div>
       <h1>{portfolio.name}</h1>
       <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
-      <p>Balance: ${portfolio.balance.toFixed(2)}</p>
+      <p>Total Portfolio Value: ${totalPortfolioValue.toFixed(2)}</p>
       </div>
 
       {sellSuccessMessage && (
@@ -250,22 +289,23 @@ const PortfolioDetails = () => {
         />
       )}
 
-      {showBuyModal && (
-        <BuyStockModal
-            portfolioStocks={holdingsWithPrices}
-            onClose={closeBuyModal}
-            onBuy={buyStock}
-            balance={portfolio.balance}
-            stockPrices={stockPrices}
-        />
-      )}
+    {showBuyModal && holdingsWithPrices && (
+    <BuyStockModal
+        portfolioStocks={holdingsWithPrices}
+        onClose={closeBuyModal}
+        onBuy={buyStock}
+        balance={portfolio.balance}
+        stockPrices={availableStockPrices} // changed from stockPrices to availableStockPrices
+        portfolioId={portfolio.id}
+    />
+    )}
 
 <div>
       </div>
 
       {showAddMoneyModal && (
         <AddMoneyModal
-          portfolioId={portfolioId}
+          portfolioId={portfolio.id}
           onClose={closeAddMoneyModal}
           onAddMoney={addMoney}
         />

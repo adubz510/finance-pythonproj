@@ -1,13 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./BuyStockModal.css";
 
-const BuyStockModal = ({ portfolioStocks, onClose, onBuy, balance, stockPrices, portfolioId }) => {
-  const [selectedSymbol, setSelectedSymbol] = useState(
-    portfolioStocks.length > 0 ? portfolioStocks[0].stock.symbol : ""
-  );
-  const [quantity, setQuantity] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
+const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) => {
+    const [availableStocks, setAvailableStocks] = useState([]);
+    const [selectedSymbol, setSelectedSymbol] = useState("");
+    const [quantity, setQuantity] = useState(0);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [fetchError, setFetchError] = useState("");
 
+
+  // Fetch available stocks from the API
+  useEffect(() => {
+    const fetchAvailableStocks = async () => {
+      try {
+        const response = await fetch("/api/stocks");
+        if (!response.ok) {
+          throw new Error("Failed to fetch stocks");
+        }
+        const data = await response.json();
+        setAvailableStocks(data);
+        if (data.length > 0) {
+          setSelectedSymbol(data[0].symbol);  // Set the first stock as the default
+        }
+        setLoading(false);
+      } catch (error) {
+        setFetchError(error.message || "Error fetching stocks");
+        setLoading(false);
+      }
+    };
+
+    fetchAvailableStocks();
+  }, []);
+    
   const handleBuy = async () => {
     if (!selectedSymbol || quantity <= 0) {
       setErrorMessage("Invalid buy parameters.");
@@ -60,9 +85,9 @@ const BuyStockModal = ({ portfolioStocks, onClose, onBuy, balance, stockPrices, 
           value={selectedSymbol}
           onChange={(e) => setSelectedSymbol(e.target.value)}
         >
-          {portfolioStocks.map((h) => (
-            <option key={h.id} value={h.stock.symbol}>
-              {h.stock.symbol}
+          {availableStocks.map((stock) => (
+            <option key={stock.id} value={stock.symbol}>
+              {stock.symbol} - {stock.name}
             </option>
           ))}
         </select>

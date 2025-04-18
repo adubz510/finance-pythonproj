@@ -16,6 +16,43 @@ const PortfolioPage = () => {
   const { setModalContent, setModalVisible } = useModal();
 
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
+  const [portfolioValues, setPortfolioValues] = useState({});
+
+  // Fetch current prices for holdings
+  useEffect(() => {
+    const fetchPortfolioValues = async () => {
+      if (!portfolios || portfolios.length === 0) return;
+  
+      const values = {};
+  
+      for (const portfolio of portfolios) {
+        if (!portfolio.holdings) continue;
+  
+        let totalHoldingsValue = 0;
+  
+        for (const holding of portfolio.holdings) {
+          const symbol = holding.stock?.symbol;
+          if (!symbol) continue;
+  
+          try {
+            const res = await fetch(`/api/stocks/${symbol}`);
+            if (!res.ok) throw new Error("Failed to fetch price");
+            const data = await res.json();
+            totalHoldingsValue += data.current_price * holding.quantity;
+          } catch (err) {
+            console.error(`Failed to fetch price for ${symbol}:`, err);
+          }
+        }
+  
+        values[portfolio.id] = portfolio.balance + totalHoldingsValue;
+      }
+  
+      setPortfolioValues(values);
+    };
+  
+    fetchPortfolioValues();
+  }, [portfolios]);
+
 
   useEffect(() => {
     dispatch(thunkFetchPortfolio());
@@ -27,8 +64,10 @@ const PortfolioPage = () => {
     setModalVisible(true); 
     };
 
-  const handleDeletePortfolio = (portfolioId) => {
-    setModalContent(<DeletePortfolioModal portfolio={portfolioId} />);
+  const handleDeletePortfolio = (portfolio) => {
+    setModalContent(<DeletePortfolioModal 
+        portfolio={portfolio} 
+        portfolioValue={portfolioValues[portfolio.id]}/>);
     setModalVisible(true);
     }
 
@@ -51,8 +90,7 @@ const PortfolioPage = () => {
               <li key={portfolio.id}>
                 <div>
                   <h3>{portfolio.name}</h3>
-                  <p>Balance: ${portfolio.balance.toFixed(2)}</p>
-                  <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
+                  <p>Portfolio Value: ${portfolioValues[portfolio.id]?.toFixed(2) || portfolio.balance.toFixed(2)}</p>                  <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
                   <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
                 </div>
               </li>

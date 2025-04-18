@@ -38,9 +38,10 @@ def create_portfolio():
     return jsonify({'message': 'Portfolio created successfully', 'portfolio': portfolio.to_dict()}), 201
 
 # update balance of specific portfolio (add money)
-@portfolio_routes.route('/<int:portfolio_id>/balance', methods=['PUT'])
+@portfolio_routes.route('/balance', methods=['PUT'])
 @login_required
-def update_balance(portfolio_id):
+def update_balance():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
@@ -74,10 +75,11 @@ def update_balance(portfolio_id):
 @portfolio_routes.route('/buy', methods=['POST'])
 @login_required
 def buy_stock():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     data = request.get_json()
     stock_id = data.get('stock_id')
     quantity = data.get('quantity')
-    portfolio_id = data.get('portfolio_id')
+    # portfolio_id = data.get('portfolio_id')
 
     if not stock_id or not quantity or not portfolio_id:
         return jsonify({'error': 'Missing stock_id, quantity, or portfolio_id'}), 400
@@ -112,9 +114,10 @@ def buy_stock():
     return holding.to_dict(), 201
 
 # delete portfolio (simulate selling all stocks before deletion)
-@portfolio_routes.route('/<int:portfolio_id>', methods=['DELETE'])
+@portfolio_routes.route('/delete', methods=['DELETE'])
 @login_required
-def delete_portfolio(portfolio_id):
+def delete_portfolio():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
