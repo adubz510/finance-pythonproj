@@ -68,7 +68,7 @@ def buy_stock():
     transaction = Transaction(
         transaction_type='buy',
         quantity=quantity,
-        current_stock_price=current_stock_price,
+        price_per_stock=current_stock_price,
         total_amount=total_amount,
         portfolio_id=portfolio.id,
         stock_id=stock.id
@@ -119,7 +119,7 @@ def sell_stock():
     transaction = Transaction(
         transaction_type='sell',
         quantity=quantity,
-        current_stock_price=stock.current_price,
+        price_per_stock=stock.current_price,
         total_amount=total_amount,
         portfolio_id=portfolio.id,
         stock_id=stock.id,
@@ -137,7 +137,7 @@ def sell_holding_by_id(holding_id):
     portfolio_id = request.args.get('portfolio_id', type=int)
     data = request.get_json()
     quantity = data.get('quantity', 0)
-    
+
     portfolio = Portfolio.query.get(portfolio_id)
     if not portfolio:
         return jsonify({"error": "Portfolio not found"}), 404

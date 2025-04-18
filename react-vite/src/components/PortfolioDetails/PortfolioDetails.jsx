@@ -211,7 +211,9 @@ const PortfolioDetails = () => {
       if (!res.ok) throw new Error(data.error || "Failed to buy stock");
   
       await dispatch(thunkFetchPortfolio());
-      closeBuyModal();
+      setTimeout(() => {
+        closeBuyModal();
+      }, 100); // small delay to ensure state updates
       setBuySuccessMessage(`Bought ${quantity} share(s) of ${symbol.toUpperCase()} successfully!`);
       setTimeout(() => setBuySuccessMessage(""), 3000);
     } catch (err) {

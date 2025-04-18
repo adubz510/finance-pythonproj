@@ -51,7 +51,7 @@ const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) =>
 
     try {
       // Call the onBuy function to handle the buy action (API call)
-      const response = await fetch(`/api/portfolio/${portfolioId}/holdings/buy`, {
+      const response = await fetch(`/api/holdings/buy?portfolio_id=${portfolioId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,6 +92,14 @@ const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) =>
           ))}
         </select>
       </label>
+
+      {selectedSymbol && stockPrices[selectedSymbol] && (
+        <p>
+        <strong>Current Price:</strong> ${stockPrices[selectedSymbol].toFixed(2)}
+        </p>
+        )}
+
+      
 
       <label>
         Number of Shares:

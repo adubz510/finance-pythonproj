@@ -120,13 +120,13 @@ export const thunkDeletePortfolio = (portfolioId) => async (dispatch) => {
   }
 };
 
-export const thunkAddStockToPortfolio = (stock, quantity) => async (dispatch) => {
+export const thunkAddStockToPortfolio = (portfolioId, stock, quantity) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const res = await fetch(`/api/portfolios/stocks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stock, quantity }),
+      body: JSON.stringify({ portfolio_id: portfolioId, stock, quantity }),
     });
 
     if (res.ok) {
