@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/StockCard.css'; // Make sure this matches your CSS file name
+import "./StockCard.css";
 
 const StockCard = ({ stock }) => {
   const navigate = useNavigate();

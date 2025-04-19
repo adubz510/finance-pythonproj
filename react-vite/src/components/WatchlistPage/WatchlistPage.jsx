@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import "./WatchlistPage.css";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;

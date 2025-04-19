@@ -9,7 +9,7 @@ import {
   CartesianGrid,
   ResponsiveContainer
 } from 'recharts';
-import '../styles/StockDetailPage.css';
+import './StockDetailPage.css';
 
 const StockDetailPage = () => {
   const { symbol } = useParams(); // Extract symbol from URL

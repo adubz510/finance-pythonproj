@@ -1,27 +1,22 @@
 import { createBrowserRouter } from 'react-router-dom';
 import LoginFormPage from '../components/LoginFormPage';
+import HomePage from '../components/HomePage/HomePage';
 import SignupFormPage from '../components/SignupFormPage';
 import PortfolioPage from '../components/PortfolioPage/PortfolioPage';
 import PortfolioDetails from '../components/PortfolioDetails/PortfolioDetails';
 import WatchlistPage from '../components/WatchlistPage/WatchlistPage';
 import Layout from './Layout';
-import StockDetailPage from '../pages/StockDetailPage';
-import StockListPage from '../pages/StockListPage';
+import StockDetailPage from '../components/StockDetailPage/StockDetailPage';
+import StockListPage from '../components/StockListPage/StockListPage';
+import StockCard from '../components/StockCard/StockCard';
+
 export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       {
         path: "/",
-        element: 
-        <div className="home-container">
-        <h1>TRADE <br /> CRYPTO FUTURES</h1>
-        <p>
-        Leverage the power of crypto futures trading on Webull. Diversify your portfolio or 
-        leverage cryptocurrency market movements with our seamless, low-cost futures platform.
-        </p>
-        <button>Get Started</button>
-        </div>
+        element: <HomePage />,
       },
       {
         path: "login",
@@ -41,10 +36,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "stocks",
-        element: <StockListPage/>
+        element: <StockListPage />
       },
-      { path: "stocks/:symbol",
-        element: <StockDetailPage/>
+      {
+        path: "stocks/:symbol",
+        element: <StockDetailPage />
       },
       {
         path: "watchlist",
