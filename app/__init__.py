@@ -13,6 +13,7 @@ from .api.portfolio_routes import portfolio_routes
 from .api.holding_routes import holding_routes
 from .api.stocks_routes import stocks_routes
 from .api.transaction_routes import transaction_routes
+from .api.watchlist_routes import watchlist_routes
 from .seeds import seed_commands
 from .config import Config
 
