@@ -24,14 +24,27 @@ const StockDetailPage = () => {
   const [holding, setHolding] = useState(null);
   const [purchaseMessage, setPurchaseMessage] = useState('');
 
-  // ✅ Fetch user's portfolios
+  // // ✅ Fetch user's portfolios
+  // useEffect(() => {
+  //   fetch('/api/portfolios')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setPortfolios(data.portfolios || []);
+  //       if (data.portfolios.length > 0) {
+  //         setSelectedPortfolioId(data.portfolios[0].id); // Default to first one
+  //       }
+  //     });
+  // }, []);
+
+  // ✅ Fetch portfolios
   useEffect(() => {
     fetch('/api/portfolios')
       .then((res) => res.json())
       .then((data) => {
-        setPortfolios(data.portfolios || []);
-        if (data.portfolios.length > 0) {
-          setSelectedPortfolioId(data.portfolios[0].id); // Default to first one
+        const fetched = data.portfolios || [];
+        setPortfolios(fetched);
+        if (fetched.length > 0) {
+          setSelectedPortfolioId(fetched[0].id);
         }
       });
   }, []);
@@ -60,7 +73,7 @@ const StockDetailPage = () => {
   // ✅ Fetch current holding for this stock
   useEffect(() => {
     if (!selectedPortfolioId) return;
-    fetch(`/api/portfolios/${selectedPortfolioId}/holdings/${symbol}`)
+    fetch(`/api/holdings/${symbol}?portfolio_id=${selectedPortfolioId}`)
       .then((res) => {
         if (res.ok) return res.json();
         return null;
@@ -73,7 +86,7 @@ const StockDetailPage = () => {
 
   // ✅ Handle Buy Request
   const handleBuy = async () => {
-    const res = await fetch(`/api/portfolios/${selectedPortfolioId}/holdings/buy`, {
+    const res = await fetch(`/api/holdings/buy?portfolio_id=${selectedPortfolioId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ symbol, quantity })

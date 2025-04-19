@@ -254,7 +254,7 @@ const PortfolioDetails = () => {
   </div>
         )}
 
-      <h2>Holdings</h2>
+      <h2>Stocks Owned</h2>
       {holdingsWithPrices.length > 0 ? (
         <ul>
           {holdingsWithPrices.map((h) => (
