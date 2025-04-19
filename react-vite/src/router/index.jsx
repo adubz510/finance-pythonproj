@@ -3,6 +3,7 @@ import LoginFormPage from '../components/LoginFormPage';
 import SignupFormPage from '../components/SignupFormPage';
 import PortfolioPage from '../components/PortfolioPage/PortfolioPage';
 import PortfolioDetails from '../components/PortfolioDetails/PortfolioDetails';
+import WatchlistPage from '../components/WatchlistPage/WatchlistPage';
 import Layout from './Layout';
 
 export const router = createBrowserRouter([
@@ -32,7 +33,11 @@ export const router = createBrowserRouter([
       {
         path: "portfolios/:portfolioId/balance",
         element: <PortfolioDetails/>
-      }
+      },
+      {
+        path: "watchlist",
+        element: <WatchlistPage />
+      },
     ],
   },
 ]);
