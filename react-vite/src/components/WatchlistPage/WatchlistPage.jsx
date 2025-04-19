@@ -76,7 +76,7 @@ const Watchlist = () => {
           onChange={(e) => setStockId(e.target.value)}
           className="border p-2 rounded"
         />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" className="submit-btn">
           Add Stock
         </button>
       </form>
@@ -84,10 +84,10 @@ const Watchlist = () => {
       <ul className="divide-y">
         {stocks.map((stock) => (
           <li key={stock.id} className="py-2 flex justify-between">
-            <span>{stock.symbol} {stock.name ? `- ${stock.name}` : "" }</span>
+            <span>{stock.symbol} {stock.name ? `- ${stock.name}` : ""}</span>
             <button
               onClick={() => handleRemoveStock(stock.id)}
-              className="text-red-600 hover:underline"
+              className="remove-btn"
             >
               Remove
             </button>
