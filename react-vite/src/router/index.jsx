@@ -31,6 +31,13 @@ export const router = createBrowserRouter([
         path: "portfolios/:portfolioId",
         element: <PortfolioDetails />
       },
+      {
+        path: "stocks",
+        element: <StockListPage/>
+      },
+      { path: "stocks/:symbol",
+        element: <StockDetailPage/>
+      }
     ],
   },
 ]);
