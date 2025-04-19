@@ -71,48 +71,6 @@ def update_balance():
 
     return jsonify({'message': 'Money added to portfolio', 'portfolio': portfolio.to_dict()}), 200
 
-    #buy stocks for portfolio
-@portfolio_routes.route('/buy', methods=['POST'])
-@login_required
-def buy_stock():
-    portfolio_id = request.args.get('portfolio_id', type=int)
-    data = request.get_json()
-    stock_id = data.get('stock_id')
-    quantity = data.get('quantity')
-    # portfolio_id = data.get('portfolio_id')
-
-    if not stock_id or not quantity or not portfolio_id:
-        return jsonify({'error': 'Missing stock_id, quantity, or portfolio_id'}), 400
-
-    # Check if the stock exists
-    stock = Stock.query.get(stock_id)
-    if not stock:
-        return jsonify({'error': 'Stock not found'}), 404
-
-    # Make sure portfolio belongs to the current user
-    portfolio = Portfolio.query.get(portfolio_id)
-    if not portfolio or portfolio.user_id != current_user.id:
-        return jsonify({'error': 'Unauthorized or portfolio not found'}), 403
-
-    # See if this stock already exists in the portfolio
-    holding = Holding.query.filter_by(portfolio_id=portfolio_id, stock_id=stock_id).first()
-
-    if holding:
-        # Update quantity
-        holding.quantity += quantity
-    else:
-        # Create a new holding
-        holding = Holding(
-            portfolio_id=portfolio_id,
-            stock_id=stock.id,
-            stock_symbol=stock.symbol,
-            quantity=quantity
-        )
-        db.session.add(holding)
-
-    db.session.commit()
-    return holding.to_dict(), 201
-
 # delete portfolio (simulate selling all stocks before deletion)
 @portfolio_routes.route('/delete', methods=['DELETE'])
 @login_required

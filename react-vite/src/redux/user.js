@@ -30,6 +30,8 @@ export const thunkAddToUserBalance = (amount) => async (dispatch) => {
     }
   };
 
+export { setUserBalance };
+
 const initialState = {
   balance: null,
 };

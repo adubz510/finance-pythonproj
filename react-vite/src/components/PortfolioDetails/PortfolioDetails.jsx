@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkFetchPortfolio } from "../../redux/portfolio";
-import { thunkFetchUserBalance } from "../../redux/user";
+import { thunkFetchUserBalance, setUserBalance } from "../../redux/user";
 import SellStockModal from "./SellStockModal";
 import AddMoneyModal from "./AddMoneyModal";
 import BuyStockModal from "./BuyStockModal"
@@ -18,7 +18,7 @@ const PortfolioDetails = () => {
 
 
   const [holdingsWithPrices, setHoldingsWithPrices] = useState([]);
-  const [selectedHolding, setSelectedHolding] = useState(null);
+//   const [selectedHolding, setSelectedHolding] = useState(null);
   const [showSellModal, setShowSellModal] = useState(false);
   const [showAddMoneyModal, setShowAddMoneyModal] = useState(false);
   const [sellSuccessMessage, setSellSuccessMessage] = useState("");
@@ -27,6 +27,10 @@ const PortfolioDetails = () => {
   const [allStocks, setAllStocks] = useState([]);
   const [availableStockPrices, setAvailableStockPrices] = useState({});
 
+  const handleBalanceUpdate = (newBalance) => {
+    dispatch(setUserBalance(newBalance));
+  };
+  
 
   useEffect(() => {
     if (!portfolio) {
@@ -38,7 +42,7 @@ const PortfolioDetails = () => {
   useEffect(() => {
     const fetchStocks = async () => {
       try {
-        const res = await fetch('/api/stocks');
+        const res = await fetch(`/api/stocks`);
         const data = await res.json();
         setAllStocks(data);
   
@@ -69,6 +73,7 @@ const PortfolioDetails = () => {
 
       const updatedHoldings = await Promise.all(
         portfolio.holdings.map(async (holding) => {
+        //   console.log("HOLDINGS : ", holding)
           const symbol = holding.stock.symbol;
 
           if (!symbol) {
@@ -119,7 +124,7 @@ const PortfolioDetails = () => {
 
   const closeSellModal = () => {
     setShowSellModal(false);
-    setSelectedHolding(null);
+    // setSelectedHolding(null);
   };
 
   const openAddMoneyModal = () => {
@@ -199,18 +204,9 @@ const PortfolioDetails = () => {
 
   const buyStock = async (symbol, quantity) => {
     try {
-      const res = await fetch(`/api/holdings/buy?portfolio_id=${portfolioId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ symbol, quantity }),
-      });
-  
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to buy stock");
-  
+          
       await dispatch(thunkFetchPortfolio());
+      await dispatch(thunkFetchUserBalance());
       setTimeout(() => {
         closeBuyModal();
       }, 100); // small delay to ensure state updates
@@ -296,9 +292,11 @@ const PortfolioDetails = () => {
         portfolioStocks={holdingsWithPrices}
         onClose={closeBuyModal}
         onBuy={buyStock}
-        balance={portfolio.balance}
+        balance={userBalance}
         stockPrices={availableStockPrices} // changed from stockPrices to availableStockPrices
         portfolioId={portfolio.id}
+        availableStocks={allStocks}
+        onBalanceUpdate={handleBalanceUpdate}
     />
     )}
 

@@ -1,56 +1,45 @@
+//the newest version
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { thunkFetchUserBalance } from "../../redux/user";
 import "./BuyStockModal.css";
 
-const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) => {
-    const [availableStocks, setAvailableStocks] = useState([]);
-    const [selectedSymbol, setSelectedSymbol] = useState("");
-    const [quantity, setQuantity] = useState(0);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [fetchError, setFetchError] = useState("");
+const BuyStockModal = ({
+  onClose,
+  onBuy,
+  balance,
+  stockPrices,
+  portfolioId,
+  availableStocks, // <-- passed in from parent now
+  onBalanceUpdate,
+}) => {
+  const dispatch = useDispatch();
+  const [selectedSymbol, setSelectedSymbol] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
-
-  // Fetch available stocks from the API
+  // Set initial selected symbol
   useEffect(() => {
-    const fetchAvailableStocks = async () => {
-      try {
-        const response = await fetch("/api/stocks");
-        if (!response.ok) {
-          throw new Error("Failed to fetch stocks");
-        }
-        const data = await response.json();
-        setAvailableStocks(data);
-        if (data.length > 0) {
-          setSelectedSymbol(data[0].symbol);  // Set the first stock as the default
-        }
-        setLoading(false);
-      } catch (error) {
-        setFetchError(error.message || "Error fetching stocks");
-        setLoading(false);
-      }
-    };
+    if (availableStocks?.length > 0) {
+      setSelectedSymbol(availableStocks[0].symbol);
+    }
+  }, [availableStocks]);
 
-    fetchAvailableStocks();
-  }, []);
-    
   const handleBuy = async () => {
     if (!selectedSymbol || quantity <= 0) {
       setErrorMessage("Invalid buy parameters.");
       return;
     }
 
-    // Get the price of the selected stock
     const stockPrice = stockPrices[selectedSymbol];
-
-    // Check if user has enough balance
     const totalCost = stockPrice * quantity;
+
     if (totalCost > balance) {
       setErrorMessage("Insufficient balance.");
       return;
     }
 
     try {
-      // Call the onBuy function to handle the buy action (API call)
       const response = await fetch(`/api/holdings/buy?portfolio_id=${portfolioId}`, {
         method: "POST",
         headers: {
@@ -66,9 +55,13 @@ const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) =>
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to buy stock");
 
-      // After successful buy, update the portfolio data
-      onBuy(selectedSymbol, quantity);  // You might want to call a function to update Redux state
-      onClose();  // Optionally, close after successful buy
+
+      const newBalance = balance - totalCost;
+      onBalanceUpdate(newBalance);
+      await dispatch(thunkFetchUserBalance())
+
+      onBuy(selectedSymbol, quantity);
+      onClose();
     } catch (error) {
       console.error("Buy failed:", error);
       setErrorMessage(error.message || "Failed to buy stock");
@@ -95,11 +88,9 @@ const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) =>
 
       {selectedSymbol && stockPrices[selectedSymbol] && (
         <p>
-        <strong>Current Price:</strong> ${stockPrices[selectedSymbol].toFixed(2)}
+          <strong>Current Price:</strong> ${stockPrices[selectedSymbol].toFixed(2)}
         </p>
-        )}
-
-      
+      )}
 
       <label>
         Number of Shares:
@@ -113,6 +104,12 @@ const BuyStockModal = ({ onClose, onBuy, balance, stockPrices, portfolioId }) =>
           }}
         />
       </label>
+
+      {selectedSymbol && stockPrices[selectedSymbol] && quantity > 0 && (
+        <p>
+        <strong>Total Cost:</strong> ${(stockPrices[selectedSymbol] * quantity).toFixed(2)}
+        </p>
+        )}
 
       {errorMessage && <p className="error">{errorMessage}</p>}
 

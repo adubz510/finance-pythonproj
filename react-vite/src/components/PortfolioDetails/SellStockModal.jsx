@@ -47,6 +47,7 @@ const SellStockModal = ({ holdings, onClose, onSell }) => {
             }
           />
         </label>
+
   
         <button onClick={handleSell}>Confirm Sell</button>
         <button onClick={onClose}>Cancel</button>

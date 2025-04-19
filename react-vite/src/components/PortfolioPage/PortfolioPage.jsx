@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { thunkFetchPortfolio, thunkDeletePortfolio } from "../../redux/portfolio";
+import { thunkFetchPortfolio } from "../../redux/portfolio";
 import { thunkFetchUserBalance } from "../../redux/user";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
@@ -15,7 +15,7 @@ const PortfolioPage = () => {
   const userBalance = useSelector((state) => state.user.balance)
   const { setModalContent, setModalVisible } = useModal();
 
-  const [selectedPortfolio, setSelectedPortfolio] = useState(null);
+//   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [portfolioValues, setPortfolioValues] = useState({});
 
   // Fetch current prices for holdings
@@ -101,12 +101,12 @@ const PortfolioPage = () => {
         <p>{`No portfolios found. Click "Add Portfolio" to create one.`}</p>
       )}
 
-      {selectedPortfolio && (
+      {/* {selectedPortfolio && (
         <div>
           <h3>Selected Portfolio: {selectedPortfolio.name}</h3>
           <p>Balance: ${selectedPortfolio.balance}</p>
         </div>
-      )}
+      )} */}
 
     </div>
   );

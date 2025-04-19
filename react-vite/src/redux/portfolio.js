@@ -52,7 +52,7 @@ const setError = (error) => ({ type: SET_ERROR, error });
 export const thunkFetchPortfolio = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await fetch("/api/portfolios/");
+    const res = await fetch(`/api/portfolios/`);
     if (res.ok) {
       const data = await res.json();
       dispatch(setPortfolios(data.portfolios));
@@ -67,7 +67,7 @@ export const thunkFetchPortfolio = () => async (dispatch) => {
 export const thunkCreatePortfolio = (data) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await fetch("/api/portfolios/", {
+    const res = await fetch(`/api/portfolios/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -93,7 +93,7 @@ export const thunkUpdateBalance = (portfolioId, amount, closeModal) => async (di
     });
 
     if (res.ok) {
-      const data = await res.json();
+    //   const data = await res.json();
       dispatch(addMoney(amount, portfolioId));
       closeModal();
     } else throw new Error("Failed to update balance");
@@ -109,7 +109,7 @@ export const thunkDeletePortfolio = (portfolioId) => async (dispatch) => {
   try {
     const res = await fetch(`/api/portfolios/delete?portfolio_id=${portfolioId}`, { method: "DELETE" });
     if (res.ok) {
-      const data = await res.json();
+    //   const data = await res.json();
       dispatch(removePortfolio(portfolioId));
       dispatch(thunkFetchUserBalance());
     } else throw new Error("Failed to delete portfolio");
@@ -217,18 +217,29 @@ function portfolioReducer(state = initialState, action) {
         ),
       };
 
-    case ADD_STOCK:
-      return {
-        ...state,
-        portfolios: state.portfolios.map((p) =>
-          p.id === action.stock.portfolioId
-            ? {
-                ...p,
-                holdings: [...(p.holdings || []), { ...action.stock, quantity: action.quantity }],
+      case ADD_STOCK:
+        return {
+          ...state,
+          portfolios: state.portfolios.map((p) => {
+            if (p.id === action.stock.portfolioId) {
+              const existingStock = p.holdings?.find((h) => h.id === action.stock.id);
+              if (existingStock) {
+                return {
+                  ...p,
+                  holdings: p.holdings.map((h) =>
+                    h.id === action.stock.id ? { ...h, quantity: h.quantity + action.quantity } : h
+                  ),
+                };
+              } else {
+                return {
+                  ...p,
+                  holdings: [...(p.holdings || []), { ...action.stock, quantity: action.quantity }],
+                };
               }
-            : p
-        ),
-      };
+            }
+            return p;
+          }),
+        };
 
     case REMOVE_STOCK:
       return {
