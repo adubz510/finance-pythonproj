@@ -9,15 +9,9 @@ from sqlalchemy.engine import Engine  # Enforce Foreign Key Constraints in SQLit
 from .models import db, User, Portfolio, Holding, Stock, Transaction, Watchlist, WatchlistStock
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
-from .api.portfolio_routes import portfolio_routes
-from .api.holding_routes import holding_routes
-from .api.stocks_routes import stocks_routes
-from .api.transaction_routes import transaction_routes
 from .api.watchlist_routes import watchlist_routes
 from .seeds import seed_commands
 from .config import Config
-from .api.stocks_routes import stocks_routes  #added this line to
-
 
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
@@ -40,9 +34,10 @@ app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(portfolio_routes, url_prefix='/api/portfolios')  # Portfolio endpoints
-app.register_blueprint(holding_routes, url_prefix='/api/holdings')
+app.register_blueprint(holding_routes, url_prefix='/api/portfolios/<int:portfolio_id>/holdings')
 app.register_blueprint(stocks_routes,url_prefix='/api/stocks')
-app.register_blueprint(transaction_routes, url_prefix='/api/transactions')
+app.register_blueprint(transaction_routes, url_prefix='/api/portfolios/<int:portfolio_id>/transactions')
+app.register_blueprint(watchlist_routes, url_prefix='/api/watchlist')
 
 
 # Initialize database and migrations

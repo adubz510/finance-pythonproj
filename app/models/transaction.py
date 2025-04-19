@@ -22,7 +22,7 @@ class Transaction(db.Model):
 
     # Relationships
     portfolio = db.relationship('Portfolio', back_populates='transactions')
-    holding = db.relationship('Holding', back_populates='transactions') 
+    holding = db.relationship('Holding', back_populates='transactions')
     stock = db.relationship('Stock', backref='transactions')
 
     def to_dict(self):
@@ -36,5 +36,5 @@ class Transaction(db.Model):
             'portfolio_id': self.portfolio_id,
             'stock': self.stock.to_dict(),
             'holding_id': self.holding_id,  # Include the holding_id
-            'holding': self.holding.to_dict() if self.holding else None  # Optionally include holding details as well if needed       
+            'holding': self.holding.to_dict() if self.holding else None  # Optionally include holding details as well if needed
         }
