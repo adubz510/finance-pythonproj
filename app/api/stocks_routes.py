@@ -5,6 +5,8 @@ import os
 import requests
 from dotenv import load_dotenv
 import pprint
+from datetime import datetime, timedelta
+from app.models import StockHistory
 stocks_routes = Blueprint('stocks', __name__)
 
 load_dotenv()
@@ -59,21 +61,53 @@ def create_stock():
 @stocks_routes.route('/<symbol>/history')
 def get_stock_history(symbol):
     timeframe = request.args.get('timeframe', 'TIME_SERIES_DAILY')
-    url = f'https://www.alphavantage.co/query?function={timeframe}&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
+    now = datetime.utcnow()
 
+    # 🔍 Try to fetch from cache
+    cached_data = StockHistory.query.filter(
+        StockHistory.symbol == symbol.upper(),
+        StockHistory.timeframe == timeframe
+    ).order_by(StockHistory.date.desc()).all()
+
+    # ✅ Serve cached response if it's fresh
+    if cached_data and cached_data[0].date >= (now - timedelta(days=1)).date():
+        return jsonify([entry.to_dict() for entry in cached_data])
+
+    # 🛰️ Call Alpha Vantage API
+    url = f'https://www.alphavantage.co/query?function={timeframe}&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
     response = requests.get(url)
     data = response.json()
 
-    pprint.pprint(data)
-    # Parse the time series data
     key = next((k for k in data if 'Time Series' in k), None)
     if not key:
         return jsonify({'error': 'Data not available'}), 400
 
     time_series = data[key]
-    formatted_data = [
-        {'date': date, 'close': float(values['4. close'])}
-        for date, values in list(time_series.items())[:30]  # limit to last 30 points
-    ][::-1]  # Reverse to show oldest first
+    parsed = []
 
-    return jsonify(formatted_data)
+    # 🧠 Loop through all date entries (no slice/limit)
+    for date_str, values in time_series.items():
+        close = float(values['4. close'])
+        parsed.append({'date': date_str, 'close': close})
+
+        # 🗂️ Cache each record if it doesn't already exist
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        exists = StockHistory.query.filter_by(
+            symbol=symbol.upper(),
+            date=date_obj,
+            timeframe=timeframe
+        ).first()
+
+        if not exists:
+            new_entry = StockHistory(
+                symbol=symbol.upper(),
+                date=date_obj,
+                close=close,
+                timeframe=timeframe
+            )
+            db.session.add(new_entry)
+
+    db.session.commit()
+
+    # ⏪ Reverse to show oldest-to-newest for frontend graph
+    return jsonify(parsed[::-1])
