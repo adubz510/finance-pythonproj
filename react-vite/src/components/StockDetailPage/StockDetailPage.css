@@ -3,108 +3,121 @@
   margin: 40px auto;
   padding: 0 20px;
   font-family: 'Segoe UI', sans-serif;
+  color: #f0f0f0;
 }
 
 .stock-detail-title {
   font-size: 2rem;
   font-weight: 600;
-  color: #4c4cff;
-  margin-bottom: 20px;
+  color: #ffffff;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .stock-detail-dropdown {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 20px 0;
+  margin: 15px 0;
+  color: #ffffff;
+}
+
+.stock-detail-dropdown label {
+  font-weight: 500;
 }
 
 #timeframe-select,
 #portfolio-select {
-  padding: 8px 12px;
-  font-size: 1rem;
+  padding: 6px 12px;
+  font-size: 0.95rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: none;
+  background-color: #2e2e4d;
+  color: #ffffff;
 }
 
 .stock-detail-loading {
   font-style: italic;
-  color: #666;
+  color: #dddddd;
 }
 
 .stock-detail-error {
-  color: red;
+  color: #ff6b6b;
   font-weight: 500;
-}
-
-.stock-detail-message {
-  font-weight: bold;
-  margin: 10px 0;
-  color: #333;
 }
 
 .stock-price-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.2rem;
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .current-price {
   font-weight: bold;
-  color: #333;
+  color: #bbf7d0;
 }
 
 .percent-change {
   font-weight: bold;
 }
 
-.chart-section {
-  margin-top: 30px;
-}
-
-/* 🛒 Buy Section */
+/* BUY SECTION */
 .buy-section {
-  margin-top: 30px;
-  background: #f9f9ff;
+  margin: 30px 0;
   padding: 20px;
+  background-color: rgba(40, 40, 70, 0.85);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .buy-section h3 {
-  margin-bottom: 10px;
-  color: #333;
+  margin-bottom: 12px;
+  color: #ffffff;
 }
 
-.buy-section input[type="number"] {
+.buy-section input {
   width: 80px;
   padding: 6px 10px;
-  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
   font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  margin-right: 10px;
 }
 
 .buy-section button {
-  padding: 8px 16px;
-  background-color: #4c4cff;
+  padding: 6px 16px;
+  background-color: #6c63ff;
   color: white;
-  font-size: 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .buy-section button:hover {
-  background-color: #3a3adb;
+  background-color: #5a54d1;
 }
 
 .stock-detail-holding {
   margin-top: 10px;
-  font-size: 1rem;
-  color: #444;
+  color: #e0e0e0;
+}
+
+.stock-detail-message {
+  font-weight: 600;
+  margin-top: 15px;
+  color: #fef08a;
+}
+
+/* CHART AREA */
+.chart-section {
+  margin-top: 40px;
+}
+
+.chart-section h3 {
+  color: #f0f0f0;
+  margin-bottom: 10px;
 }
