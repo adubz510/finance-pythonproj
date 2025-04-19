@@ -38,9 +38,10 @@ def create_portfolio():
     return jsonify({'message': 'Portfolio created successfully', 'portfolio': portfolio.to_dict()}), 201
 
 # update balance of specific portfolio (add money)
-@portfolio_routes.route('/<int:portfolio_id>/balance', methods=['PUT'])
+@portfolio_routes.route('/balance', methods=['PUT'])
 @login_required
-def update_balance(portfolio_id):
+def update_balance():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
@@ -71,9 +72,10 @@ def update_balance(portfolio_id):
     return jsonify({'message': 'Money added to portfolio', 'portfolio': portfolio.to_dict()}), 200
 
 # delete portfolio (simulate selling all stocks before deletion)
-@portfolio_routes.route('/<int:portfolio_id>', methods=['DELETE'])
+@portfolio_routes.route('/delete', methods=['DELETE'])
 @login_required
-def delete_portfolio(portfolio_id):
+def delete_portfolio():
+    portfolio_id = request.args.get('portfolio_id', type=int)
     portfolio = Portfolio.query.filter_by(id=portfolio_id, user_id=current_user.id).first()
     if not portfolio:
         return jsonify({'error': 'Portfolio not found'}), 404
@@ -99,9 +101,9 @@ def delete_portfolio(portfolio_id):
             holding_id=holding.id
         )
         db.session.add(transaction)
-
-        # Remove the holding
         db.session.delete(holding)
+
+    current_user.total_balance += portfolio.balance
 
     # Unlink transactions before deleting portfolio
     for transaction in portfolio.transactions:
@@ -111,4 +113,8 @@ def delete_portfolio(portfolio_id):
     db.session.delete(portfolio)
     db.session.commit()
 
-    return jsonify({'message': 'Portfolio deleted and holdings sold'}), 200
+    return jsonify({
+        'message': 'Portfolio deleted and holdings sold',
+        'portfolioId': portfolio_id,
+        'total_balance': current_user.total_balance
+    }), 200

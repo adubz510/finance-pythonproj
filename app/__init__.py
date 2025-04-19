@@ -40,10 +40,9 @@ app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(portfolio_routes, url_prefix='/api/portfolios')  # Portfolio endpoints
-app.register_blueprint(holding_routes, url_prefix='/api/portfolios/<int:portfolio_id>/holdings')
+app.register_blueprint(holding_routes, url_prefix='/api/holdings')
 app.register_blueprint(stocks_routes,url_prefix='/api/stocks')
-app.register_blueprint(transaction_routes, url_prefix='/api/portfolios/<int:portfolio_id>/transactions')
-app.register_blueprint(watchlist_routes, url_prefix='/api/watchlist')
+app.register_blueprint(transaction_routes, url_prefix='/api/transactions')
 
 
 # Initialize database and migrations

@@ -5,12 +5,24 @@ const AddMoneyModal = ({ portfolioId, onClose, onAddMoney }) => {
   const [amount, setAmount] = useState("");
 
   const handleAddMoney = () => {
+    const parsedAmount = parseFloat(amount);
+    
     if (isNaN(amount) || parseFloat(amount) <= 0) {
       alert("Please enter a valid amount greater than 0.");
       return;
     }
+    // Check if the amount has more than 2 decimal places
+  if (amount.includes('.') && amount.split('.')[1].length > 2) {
+    alert("Please enter a valid amount with up to 2 decimal places.");
+    return;
+  }
+  if (parsedAmount < 10) {
+    alert("The amount must be at least $10.00.");
+    return;
+  }
+
     try {
-        onAddMoney(portfolioId, parseFloat(amount));
+        onAddMoney(parseFloat(amount), portfolioId);
         onClose();
     } catch (err) {
         console.error("Failed to add money:", err);
