@@ -1,3 +1,97 @@
-.profile-dropdown {
-  position: absolute;
+
+.webull-navbar {
+  position: fixed;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 0.75rem 2rem;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
 }
+
+.brand {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+
+
+.nav-links {
+  display: flex;
+  justify-content: space-evenly;
+  flex: 1;
+  gap: 6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  padding-left: 20%;
+  cursor: pointer;
+}
+
+
+.nav-links a {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #0033cc
+}
+
+.brand {
+  padding-left: 20px;
+  color: black
+}
+
+.search-bar {
+  padding-left: 10%;
+}
+
+.search-bar input {
+  background-color: #EFEFEF;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1rem;
+  outline: 1rem;
+  font-size: 1rem;
+}
+
+.auth1-btn {
+  display: flex;
+  gap: 0.9rem; 
+}
+
+.login-btn {
+  background-color: #1f80e4;
+  color: white;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1rem;
+  outline: 1rem;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.signup-btn {
+  background-color: #9aacbd;
+  color: white;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1rem;
+  outline: 1rem;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+

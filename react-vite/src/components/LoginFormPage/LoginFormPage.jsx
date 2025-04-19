@@ -32,7 +32,8 @@ function LoginFormPage() {
   };
 
   return (
-    <>
+    <div className="login-page">
+      <div className="login-form-container">
       <h1>Log In</h1>
       {errors.length > 0 &&
         errors.map((message) => <p key={message}>{message}</p>)}
@@ -59,7 +60,8 @@ function LoginFormPage() {
         {errors.password && <p>{errors.password}</p>}
         <button type="submit">Log In</button>
       </form>
-    </>
+      </div>
+    </div>
   );
 }
 
