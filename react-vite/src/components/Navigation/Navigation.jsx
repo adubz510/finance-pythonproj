@@ -27,8 +27,8 @@ const Navigation = () => {
         <input type="text" placeholder="Symbol/Name" />
       </div>
       <div className="auth1-btn">
-        <a href="/signup" className="signup-btn">Sign up</a>
-        <a href="/login" className="login-btn">Log in</a>
+        <NavLink to="/signup" className="signup-btn">Sign up</NavLink>
+        <NavLink to="/login" className="login-btn">Log in</NavLink>
       </div>
     </nav>
   );
