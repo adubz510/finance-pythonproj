@@ -4,12 +4,20 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
-from .models import db, User
+from sqlalchemy import event  # Enforce Foreign Key Constraints in SQLite
+from sqlalchemy.engine import Engine  # Enforce Foreign Key Constraints in SQLite
+from .models import db, User, Portfolio, Holding, Stock, Transaction, Watchlist, WatchlistStock
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
+from .api.portfolio_routes import portfolio_routes
+from .api.holding_routes import holding_routes
+from .api.stocks_routes import stocks_routes
+from .api.transaction_routes import transaction_routes
+from .api.watchlist_routes import watchlist_routes
 from .seeds import seed_commands
 from .config import Config
 from .api.stocks_routes import stocks_routes  #added this line to
+
 
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
@@ -31,9 +39,23 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
-app.register_blueprint(stocks_routes, url_prefix='/api/stocks') #Stocks blueprint
+app.register_blueprint(portfolio_routes, url_prefix='/api/portfolios')  # Portfolio endpoints
+app.register_blueprint(holding_routes, url_prefix='/api/portfolios/<int:portfolio_id>/holdings')
+app.register_blueprint(stocks_routes,url_prefix='/api/stocks')
+app.register_blueprint(transaction_routes, url_prefix='/api/portfolios/<int:portfolio_id>/transactions')
+app.register_blueprint(watchlist_routes, url_prefix='/api/watchlist')
+
+
+# Initialize database and migrations
 db.init_app(app)
 Migrate(app, db)
+
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 # Application Security
 CORS(app)
