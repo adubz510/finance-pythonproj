@@ -37,7 +37,11 @@ export const router = createBrowserRouter([
       },
       { path: "stocks/:symbol",
         element: <StockDetailPage/>
-      }
+      },
+      {
+        path: "watchlist",
+        element: <WatchlistPage />
+      },
     ],
   },
 ]);
