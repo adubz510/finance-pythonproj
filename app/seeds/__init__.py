@@ -48,14 +48,3 @@ def undo():
     undo_transactions()
     undo_watchlists()
     # Add other undo functions here
-
-
-@seed_commands.command('all')
-def seed():
-    seed_users()
-    seed_stocks()  #  add this
-
-@seed_commands.command('undo')
-def undo():
-    undo_users()
-    undo_stocks()  #  and this
