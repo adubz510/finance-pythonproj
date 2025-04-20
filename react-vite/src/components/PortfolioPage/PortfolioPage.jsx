@@ -84,6 +84,7 @@ const PortfolioPage = () => {
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   return (
     <div className="portfolio-page">
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
@@ -104,6 +105,8 @@ const PortfolioPage = () => {
               <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
               </div>
 =======
+=======
+>>>>>>> Stashed changes
  return (
   <div className="portfolio-page">
     <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
@@ -147,6 +150,9 @@ const PortfolioPage = () => {
               <button onClick={() => handleDeletePortfolio(portfolio)}>
                 Delete Portfolio
               </button>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             </div>
           </div>
