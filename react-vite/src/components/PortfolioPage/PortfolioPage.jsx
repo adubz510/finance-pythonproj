@@ -90,10 +90,10 @@ const PortfolioPage = () => {
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
       <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
       <p><strong>Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)}</p>
-      
+
       <button onClick={handleAddUserMoney}>Add Money to Balance</button>
       <button onClick={handleCreatePortfolio}>Add Portfolio</button>
-  
+
       {portfolios && portfolios.length > 0 ? (
         <div className="portfolio-list">
           {portfolios.map((portfolio) => (
