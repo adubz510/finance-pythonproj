@@ -235,50 +235,46 @@ const PortfolioDetails = () => {
   const totalPortfolioValue = (portfolio.balance || 0) + totalStockValue;
 
   return (
-    <div>
-        <div>
-      <h1>{portfolio.name}</h1>
-      <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
-      <p>Total Portfolio Value: ${totalPortfolioValue.toFixed(2)}</p>
+    <div className="portfolio-details-page">
+      <div>
+        <h1>{portfolio.name}</h1>
+        <h2>
+          {userBalance !== null
+            ? `${user.username}'s Balance: $${userBalance.toFixed(2)}`
+            : "Loading balance..."}
+        </h2>
+        <p>Total Portfolio Value: ${totalPortfolioValue.toFixed(2)}</p>
       </div>
-
+  
       {sellSuccessMessage && (
-  <div className="success-message">
-    {sellSuccessMessage}
-  </div>
-        )}
-
+        <div className="success-message">{sellSuccessMessage}</div>
+      )}
+  
       {buySuccessMessage && (
-  <div className="success-message">
-    {buySuccessMessage}
-  </div>
-        )}
-
+        <div className="success-message">{buySuccessMessage}</div>
+      )}
+  
       <h2>Stocks Owned</h2>
       {holdingsWithPrices.length > 0 ? (
-        <ul>
+        <div className="holdings-list">
           {holdingsWithPrices.map((h) => (
-            <li key={h.id}>
-              {h.stock.symbol} - {h.quantity} shares @ $
-              {(h.current_price !== null ? h.current_price.toFixed(2) : '...')} = $
-              {(h.current_price !== null ? (h.current_price * h.quantity).toFixed(2) : 'N/A')}
-             
-            </li>
+            <div className="holding-card" key={h.id}>
+              <p><strong>{h.stock.symbol}</strong></p>
+              <p>{h.quantity} shares @ ${h.current_price !== null ? h.current_price.toFixed(2) : '...'}</p>
+              <p>Total: ${h.current_price !== null ? (h.current_price * h.quantity).toFixed(2) : 'N/A'}</p>
+            </div>
           ))}
-    
-        </ul>
-         ) : (
-        <p>No holdings in this portfolio.</p>
+        </div>
+      ) : (
+        <p className="empty-holdings">No holdings in this portfolio.</p>
       )}
-
-    <div className="action-buttons">
+  
+      <div className="action-buttons">
         <button onClick={openSellModal}>Sell Stocks</button>
         <button onClick={openBuyModal}>Buy Stocks</button>
         <button onClick={openAddMoneyModal}>Add Money</button>
-    </div>
-
-
-
+      </div>
+  
       {showSellModal && (
         <SellStockModal
           holdings={holdingsWithPrices}
@@ -286,23 +282,20 @@ const PortfolioDetails = () => {
           onSell={sellStock}
         />
       )}
-
-    {showBuyModal && holdingsWithPrices && (
-    <BuyStockModal
-        portfolioStocks={holdingsWithPrices}
-        onClose={closeBuyModal}
-        onBuy={buyStock}
-        balance={userBalance}
-        stockPrices={availableStockPrices} // changed from stockPrices to availableStockPrices
-        portfolioId={portfolio.id}
-        availableStocks={allStocks}
-        onBalanceUpdate={handleBalanceUpdate}
-    />
-    )}
-
-<div>
-      </div>
-
+  
+      {showBuyModal && holdingsWithPrices && (
+        <BuyStockModal
+          portfolioStocks={holdingsWithPrices}
+          onClose={closeBuyModal}
+          onBuy={buyStock}
+          balance={userBalance}
+          stockPrices={availableStockPrices}
+          portfolioId={portfolio.id}
+          availableStocks={allStocks}
+          onBalanceUpdate={handleBalanceUpdate}
+        />
+      )}
+  
       {showAddMoneyModal && (
         <AddMoneyModal
           portfolioId={portfolio.id}

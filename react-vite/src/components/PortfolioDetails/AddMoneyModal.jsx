@@ -30,30 +30,30 @@ const AddMoneyModal = ({ portfolioId, onClose, onAddMoney }) => {
         }
     };
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <h2>Add Money</h2>
-        <label>
-          Amount:
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            min="1"
-            placeholder="Enter amount"
-          />
-        </label>
-
-        <div className="modal-buttons">
-          <button onClick={handleAddMoney}>Add Money</button>
-          <button className="cancel-button" onClick={onClose}>
-            Cancel
-          </button>
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Add Money</h2>
+            <label>
+              Amount:
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min="1"
+                placeholder="Enter amount"
+              />
+            </label>
+      
+            <div className="modal-buttons">
+              <button onClick={handleAddMoney}>Add Money</button>
+              <button className="cancel-button" onClick={onClose}>
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      );
 };
 
 export default AddMoneyModal;

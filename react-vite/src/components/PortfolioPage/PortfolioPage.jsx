@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import AddPortfolioModal from "./AddPortfolioModal";
 import DeletePortfolioModal from "./DeletePortfolioModal";
+import "./PortfolioPage.css"
 
 const PortfolioPage = () => {
   const dispatch = useDispatch();
@@ -75,39 +76,29 @@ const PortfolioPage = () => {
   const totalBalance = portfolios?.reduce((sum, p) => sum + p.balance, 0) ?? 0;
 
   return (
-    <div>
+    <div className="portfolio-page">
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
       <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
-      <p><strong> Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)} </p>
-
+      <p><strong>Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)}</p>
+  
       <button onClick={handleCreatePortfolio}>Add Portfolio</button>
-
+  
       {portfolios && portfolios.length > 0 ? (
-        <div>
-          <h2>Portfolio List:</h2>
-          <ul>
-            {portfolios.map((portfolio) => (
-              <li key={portfolio.id}>
-                <div>
-                  <h3>{portfolio.name}</h3>
-                  <p>Portfolio Value: ${portfolioValues[portfolio.id]?.toFixed(2) || portfolio.balance.toFixed(2)}</p>                  <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
-                  <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
-                </div>
-              </li>
-            ))}
-          </ul>
+        <div className="portfolio-list">
+          {portfolios.map((portfolio) => (
+            <div key={portfolio.id} className="portfolio-card">
+              <h3>{portfolio.name}</h3>
+              <p>Portfolio Value: ${portfolioValues[portfolio.id]?.toFixed(2) || portfolio.balance.toFixed(2)}</p>
+              <div className="portfolio-buttons">
+              <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
+              <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
-        <p>{`No portfolios found. Click "Add Portfolio" to create one.`}</p>
+        <p className="empty-portfolio">No portfolios found. Click "Add Portfolio" to create one.</p>
       )}
-
-      {/* {selectedPortfolio && (
-        <div>
-          <h3>Selected Portfolio: {selectedPortfolio.name}</h3>
-          <p>Balance: ${selectedPortfolio.balance}</p>
-        </div>
-      )} */}
-
     </div>
   );
 };

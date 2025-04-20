@@ -33,8 +33,8 @@ function AddPortfolioModal() {
   };
 
   return (
-    <>
-      <h1>Create Portfolio</h1>
+    <div className="modal">
+      <h2>Create Portfolio</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Portfolio Name
@@ -42,23 +42,27 @@ function AddPortfolioModal() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Growth Fund"
             required
           />
         </label>
+  
         <label>
           Starting Balance
           <input
             type="number"
             value={balance}
             onChange={(e) => setBalance(e.target.value)}
+            placeholder="e.g. 1000"
             required
           />
         </label>
+  
         {errors.message && <p>{errors.message}</p>}
+  
         <button type="submit">Create Portfolio</button>
       </form>
-    </>
-  );
-}
+    </div>
+  );}
 
 export default AddPortfolioModal;
