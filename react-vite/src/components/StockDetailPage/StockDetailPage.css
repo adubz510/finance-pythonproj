@@ -36,6 +36,11 @@
   color: #ffffff;
 }
 
+.account-balance {
+  color: #fef08a;
+  margin: 10px 0;
+}
+
 .stock-detail-loading {
   font-style: italic;
   color: #dddddd;
@@ -64,7 +69,6 @@
   font-weight: bold;
 }
 
-/* BUY SECTION */
 .buy-section {
   margin: 30px 0;
   padding: 20px;
@@ -112,12 +116,22 @@
   color: #fef08a;
 }
 
-/* CHART AREA */
 .chart-section {
   margin-top: 40px;
 }
 
-.chart-section h3 {
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: #f0f0f0;
   margin-bottom: 10px;
+}
+
+.chart-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
 }

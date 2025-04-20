@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   LineChart,
   Line,
@@ -12,35 +13,33 @@ import {
 import './StockDetailPage.css';
 
 const StockDetailPage = () => {
-  const { symbol } = useParams(); // Extract symbol from URL
+  const { symbol } = useParams();
+  const sessionUser = useSelector((state) => state.session.user);
+
   const [history, setHistory] = useState([]);
   const [timeframe, setTimeframe] = useState('TIME_SERIES_DAILY');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [portfolios, setPortfolios] = useState([]); // All user portfolios
-  const [selectedPortfolioId, setSelectedPortfolioId] = useState(null); // Selected portfolio
+  const [user, setUser] = useState(null);
+  const [portfolios, setPortfolios] = useState([]);
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [holding, setHolding] = useState(null);
   const [purchaseMessage, setPurchaseMessage] = useState('');
 
-  // // ✅ Fetch user's portfolios
-  // useEffect(() => {
-  //   fetch('/api/portfolios')
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setPortfolios(data.portfolios || []);
-  //       if (data.portfolios.length > 0) {
-  //         setSelectedPortfolioId(data.portfolios[0].id); // Default to first one
-  //       }
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch('/api/auth/')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.id) setUser(data);
+      });
+  }, []);
 
-  // ✅ Fetch portfolios
   useEffect(() => {
     fetch('/api/portfolios')
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         const fetched = data.portfolios || [];
         setPortfolios(fetched);
         if (fetched.length > 0) {
@@ -49,12 +48,11 @@ const StockDetailPage = () => {
       });
   }, []);
 
-  // ✅ Fetch stock history
   useEffect(() => {
     setLoading(true);
     fetch(`/api/stocks/${symbol}/history?timeframe=${timeframe}`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (data.error) {
           setError(data.error);
           setHistory([]);
@@ -70,21 +68,15 @@ const StockDetailPage = () => {
       });
   }, [symbol, timeframe]);
 
-  // ✅ Fetch current holding for this stock
   useEffect(() => {
     if (!selectedPortfolioId) return;
     fetch(`/api/holdings/${symbol}?portfolio_id=${selectedPortfolioId}`)
-      .then((res) => {
-        if (res.ok) return res.json();
-        return null;
-      })
-      .then((data) => {
-        if (data) setHolding(data);
-        else setHolding(null);
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        setHolding(data || null);
       });
   }, [symbol, selectedPortfolioId]);
 
-  // ✅ Handle Buy Request
   const handleBuy = async () => {
     const res = await fetch(`/api/holdings/buy?portfolio_id=${selectedPortfolioId}`, {
       method: 'POST',
@@ -97,6 +89,12 @@ const StockDetailPage = () => {
     if (res.ok) {
       setPurchaseMessage(`✅ Purchased ${quantity} share(s) of ${symbol}`);
       setHolding(data.holding);
+
+      const updated = await fetch('/api/portfolios');
+      const updatedData = await updated.json();
+      if (updatedData.portfolios) {
+        setPortfolios(updatedData.portfolios);
+      }
     } else {
       setPurchaseMessage(`❌ ${data.error}`);
     }
@@ -108,44 +106,35 @@ const StockDetailPage = () => {
     <div className="stock-detail-container">
       <h1 className="stock-detail-title">Stock: {symbol?.toUpperCase()}</h1>
 
-      {/* 🔽 Timeframe Selector */}
-      <div className="stock-detail-dropdown">
-        <label htmlFor="timeframe-select">Timeframe:</label>
-        <select
-          id="timeframe-select"
-          value={timeframe}
-          onChange={(e) => setTimeframe(e.target.value)}
-        >
-          <option value="TIME_SERIES_DAILY">1D</option>
-          <option value="TIME_SERIES_WEEKLY">1W</option>
-          <option value="TIME_SERIES_MONTHLY">1M</option>
-        </select>
-      </div>
+      {user && (
+        <p className="account-balance">
+          Account Balance: ${user.total_balance.toFixed(2)}
+        </p>
+      )}
 
-      {/* 🔽 Portfolio Selector */}
-      <div className="stock-detail-dropdown">
-        <label htmlFor="portfolio-select">Select Portfolio:</label>
-        <select
-          id="portfolio-select"
-          value={selectedPortfolioId || ''}
-          onChange={(e) => setSelectedPortfolioId(Number(e.target.value))}
-        >
-          {portfolios.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name} (Balance: ${p.balance.toFixed(2)})
-            </option>
-          ))}
-        </select>
-      </div>
+      {sessionUser && (
+        <div className="stock-detail-dropdown">
+          <label htmlFor="portfolio-select">Select Portfolio:</label>
+          <select
+            id="portfolio-select"
+            value={selectedPortfolioId || ''}
+            onChange={(e) => setSelectedPortfolioId(Number(e.target.value))}
+          >
+            {portfolios.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name} (Portfolio Balance: ${p.balance.toFixed(2)})
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
-      {/* 📊 Status Messages */}
       {loading && <p className="stock-detail-loading">Loading stock data...</p>}
       {error && <p className="stock-detail-error">{error}</p>}
       {purchaseMessage && (
         <p className="stock-detail-message">{purchaseMessage}</p>
       )}
 
-      {/* 📉 Price + Change */}
       {!loading && !error && history.length > 1 && (
         <div className="stock-price-summary">
           <p className="current-price">
@@ -173,41 +162,63 @@ const StockDetailPage = () => {
         </div>
       )}
 
-      {/* 🛒 Buy Section */}
-      <div className="buy-section">
-        <h3>Buy {symbol.toUpperCase()}</h3>
-        <input
-          type="number"
-          min="1"
-          value={quantity}
-          onChange={(e) => setQuantity(parseInt(e.target.value))}
-        />
-        <button onClick={handleBuy}>Buy</button>
-        {holding && (
-          <p className="stock-detail-holding">
-            You currently hold: {holding.quantity} shares
-          </p>
-        )}
-      </div>
+      {sessionUser ? (
+        <div className="buy-section">
+          <h3>Buy {symbol.toUpperCase()}</h3>
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value))}
+          />
+          <button
+            onClick={handleBuy}
+            disabled={!selectedPortfolioId || quantity <= 0}
+          >
+            Buy
+          </button>
+          {holding && (
+            <p className="stock-detail-holding">
+              You currently hold: {holding.quantity} shares
+            </p>
+          )}
+        </div>
+      ) : (
+        <p style={{ marginTop: '2rem', fontStyle: 'italic', color: 'white' }}>
+          Please log in to buy this stock or manage your portfolio.
+        </p>
+      )}
 
-      {/* 📈 Price Chart */}
       {!loading && !error && history.length > 0 && (
         <div className="chart-section">
-          <h3>Price Chart</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={history}>
-              <XAxis dataKey="date" />
-              <YAxis dataKey="close" domain={['auto', 'auto']} />
-              <Tooltip />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <Line
-                type="monotone"
-                dataKey="close"
-                stroke="#6c63ff"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="chart-header">
+            <h3>Price Chart</h3>
+            <select
+              id="timeframe-select"
+              value={timeframe}
+              onChange={(e) => setTimeframe(e.target.value)}
+            >
+              <option value="TIME_SERIES_DAILY">1D</option>
+              <option value="TIME_SERIES_WEEKLY">1W</option>
+              <option value="TIME_SERIES_MONTHLY">1M</option>
+            </select>
+          </div>
+          <div className="chart-container">
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={history}>
+                <XAxis dataKey="date" />
+                <YAxis dataKey="close" domain={['auto', 'auto']} />
+                <Tooltip />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <Line
+                  type="monotone"
+                  dataKey="close"
+                  stroke="#6c63ff"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
     </div>
