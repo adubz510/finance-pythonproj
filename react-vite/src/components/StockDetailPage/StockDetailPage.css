@@ -1,5 +1,5 @@
 .stock-detail-container {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 40px auto;
   padding: 0 20px;
   font-family: 'Segoe UI', sans-serif;
@@ -37,7 +37,8 @@
 }
 
 .account-balance {
-  color: #fef08a;
+  font-weight: 500;
+  color: #ffffff;
   margin: 10px 0;
 }
 
@@ -56,8 +57,12 @@
   justify-content: space-between;
   align-items: center;
   font-size: 1.1rem;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.below-buy-section {
   margin-top: 20px;
-  margin-bottom: 10px;
 }
 
 .current-price {
@@ -70,7 +75,7 @@
 }
 
 .buy-section {
-  margin: 30px 0;
+  margin: 30px 0 10px 0;
   padding: 20px;
   background-color: rgba(40, 40, 70, 0.85);
   border-radius: 10px;
@@ -92,12 +97,13 @@
 }
 
 .buy-section button {
-  padding: 6px 16px;
+  padding: 4px 12px;
   background-color: #6c63ff;
   color: white;
   border: none;
   border-radius: 5px;
   font-weight: bold;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
@@ -120,18 +126,23 @@
   margin-top: 40px;
 }
 
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.chart-section h3 {
   color: #f0f0f0;
   margin-bottom: 10px;
 }
 
 .chart-container {
   background-color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  width : 100%;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }

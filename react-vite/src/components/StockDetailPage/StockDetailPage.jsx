@@ -135,8 +135,36 @@ const StockDetailPage = () => {
         <p className="stock-detail-message">{purchaseMessage}</p>
       )}
 
+      {sessionUser ? (
+        <div className="buy-section">
+          <h1>{symbol.toUpperCase()}</h1>
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value))}
+          />
+          <button
+            onClick={handleBuy}
+            disabled={!selectedPortfolioId || quantity <= 0}
+          >
+            Buy
+          </button>
+          {holding && (
+            <p className="stock-detail-holding">
+              You currently hold: {holding.quantity} shares
+            </p>
+          )}
+        </div>
+      ) : (
+        <p style={{ marginTop: '2rem', fontStyle: 'italic', color: 'white' }}>
+          Please log in to buy this stock or manage your portfolio.
+        </p>
+      )}
+
+      {/* 📉 Price + Change - now moved BELOW the buy section */}
       {!loading && !error && history.length > 1 && (
-        <div className="stock-price-summary">
+        <div className="stock-price-summary below-buy-section">
           <p className="current-price">
             Current Price: ${history[history.length - 1].close.toFixed(2)}
           </p>
@@ -162,33 +190,6 @@ const StockDetailPage = () => {
         </div>
       )}
 
-      {sessionUser ? (
-        <div className="buy-section">
-          <h3>Buy {symbol.toUpperCase()}</h3>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value))}
-          />
-          <button
-            onClick={handleBuy}
-            disabled={!selectedPortfolioId || quantity <= 0}
-          >
-            Buy
-          </button>
-          {holding && (
-            <p className="stock-detail-holding">
-              You currently hold: {holding.quantity} shares
-            </p>
-          )}
-        </div>
-      ) : (
-        <p style={{ marginTop: '2rem', fontStyle: 'italic', color: 'white' }}>
-          Please log in to buy this stock or manage your portfolio.
-        </p>
-      )}
-
       {!loading && !error && history.length > 0 && (
         <div className="chart-section">
           <div className="chart-header">
@@ -204,7 +205,7 @@ const StockDetailPage = () => {
             </select>
           </div>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <LineChart data={history}>
                 <XAxis dataKey="date" />
                 <YAxis dataKey="close" domain={['auto', 'auto']} />
