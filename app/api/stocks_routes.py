@@ -56,6 +56,15 @@ def create_stock():
 
     return new_stock.to_dict(), 201
 
+# ✅ New route to fetch stock name/info
+@stocks_routes.route('/<symbol>/info', methods=['GET'])
+def get_stock_info(symbol):
+    stock = Stock.query.filter_by(symbol=symbol.upper()).first()
+    if not stock:
+        return jsonify({'error': 'Stock not found'}), 404
+    return jsonify(stock.to_dict())
+
+
 # Real-time or historical stock data from Alpha Vantage
 @stocks_routes.route('/<symbol>/history')
 def get_stock_history(symbol):

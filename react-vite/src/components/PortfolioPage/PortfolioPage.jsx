@@ -83,6 +83,7 @@ const PortfolioPage = () => {
   };
 
 
+<<<<<<< Updated upstream
   return (
     <div className="portfolio-page">
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
@@ -102,14 +103,62 @@ const PortfolioPage = () => {
               <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
               <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
               </div>
+=======
+ return (
+  <div className="portfolio-page">
+    <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
+
+    <h2>
+      {userBalance !== null
+        ? `${user.username}'s Balance: $${userBalance.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`
+        : "Loading balance..."}
+    </h2>
+
+    <p>
+      <strong>Total Portfolios Balance:</strong> $
+      {totalBalance.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </p>
+
+    <button onClick={handleAddUserMoney}>Add Money to Balance</button>
+    <button onClick={handleCreatePortfolio}>Add Portfolio</button>
+
+    {portfolios && portfolios.length > 0 ? (
+      <div className="portfolio-list">
+        {portfolios.map((portfolio) => (
+          <div key={portfolio.id} className="portfolio-card">
+            <h3>{portfolio.name}</h3>
+            <p>
+              Portfolio Value: $
+              {(portfolioValues[portfolio.id] ?? portfolio.balance).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
+            <div className="portfolio-buttons">
+              <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>
+                View Portfolio
+              </button>
+              <button onClick={() => handleDeletePortfolio(portfolio)}>
+                Delete Portfolio
+              </button>
+>>>>>>> Stashed changes
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="empty-portfolio">No portfolios found. Click "Add Portfolio" to create one.</p>
-      )}
-    </div>
-  );
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p className="empty-portfolio">No portfolios found. Click "Add Portfolio" to create one.</p>
+    )}
+  </div>
+);
+
+
 };
 
 export default PortfolioPage;

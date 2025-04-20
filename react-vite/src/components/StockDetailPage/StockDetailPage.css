@@ -146,3 +146,58 @@
   align-items: center;
   margin-bottom: 15px;
 }
+
+.stock-detail-title {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.stock-company-name {
+  font-size: 1.2rem;
+  color: #ccc;
+  font-weight: 400;
+  margin-left: 10px;
+}
+
+
+.toast-message {
+  position: fixed;
+  top: 50%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  background-color: #22c55e;
+  color: white;
+  padding: 16px 28px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  z-index: 3000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeInOut 3s ease-in-out forwards;
+  text-align: center;
+}
+
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateY(-10px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.watchlist-button {
+  margin-left: 10px;
+  background-color: #10b981;
+  color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.watchlist-button:hover {
+  background-color: #059669;
+}

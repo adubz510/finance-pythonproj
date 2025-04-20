@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   LineChart,
   Line,
@@ -10,7 +11,9 @@ import {
   CartesianGrid,
   ResponsiveContainer
 } from 'recharts';
+import BuyModal from '../BuyModal/BuyModal'; // Modal component
 import './StockDetailPage.css';
+
 
 const StockDetailPage = () => {
   const { symbol } = useParams();
@@ -20,6 +23,7 @@ const StockDetailPage = () => {
   const [timeframe, setTimeframe] = useState('TIME_SERIES_DAILY');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stockInfo, setStockInfo] = useState(null);
 
   const [user, setUser] = useState(null);
   const [portfolios, setPortfolios] = useState([]);
@@ -27,6 +31,18 @@ const StockDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [holding, setHolding] = useState(null);
   const [purchaseMessage, setPurchaseMessage] = useState('');
+
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false); // ✅ Toast state
+
+  useEffect(() => {
+    fetch(`/api/stocks/${symbol}/info`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) setStockInfo(data);
+      });
+  }, [symbol]);
 
   useEffect(() => {
     fetch('/api/auth/')
@@ -77,6 +93,30 @@ const StockDetailPage = () => {
       });
   }, [symbol, selectedPortfolioId]);
 
+
+  const handleAddToWatchlist = async () => {
+    // First, fetch stock info to get the stock_id
+    const resInfo = await fetch(`/api/stocks/${symbol}`);
+    const stock = await resInfo.json();
+
+    const res = await fetch('/api/watchlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stock_id: stock.id })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(`✅ ${symbol.toUpperCase()} added to your watchlist`);
+      navigate('/watchlist');
+    } else {
+      alert(`❌ ${data.error || data.message}`);
+    }
+  };
+
+
+
   const handleBuy = async () => {
     const res = await fetch(`/api/holdings/buy?portfolio_id=${selectedPortfolioId}`, {
       method: 'POST',
@@ -89,17 +129,28 @@ const StockDetailPage = () => {
     if (res.ok) {
       setPurchaseMessage(`✅ Purchased ${quantity} share(s) of ${symbol}`);
       setHolding(data.holding);
+      setShowToast(true);
 
+      // ✅ Update portfolios (so balance and holdings reflect change)
       const updated = await fetch('/api/portfolios');
       const updatedData = await updated.json();
       if (updatedData.portfolios) {
         setPortfolios(updatedData.portfolios);
+      }
+
+      // ✅ Re-fetch user to update total balance
+      const userRes = await fetch('/api/auth/');
+      const userData = await userRes.json();
+      if (userData && userData.id) {
+        setUser(userData);
       }
     } else {
       setPurchaseMessage(`❌ ${data.error}`);
     }
 
     setTimeout(() => setPurchaseMessage(''), 3000);
+    setTimeout(() => setShowToast(false), 3000);
+    setShowModal(false);
   };
 
   return (
@@ -108,7 +159,10 @@ const StockDetailPage = () => {
 
       {user && (
         <p className="account-balance">
-          Account Balance: ${user.total_balance.toFixed(2)}
+        Account Balance: ${user.total_balance.toLocaleString(undefined, {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}
         </p>
       )}
 
@@ -137,19 +191,9 @@ const StockDetailPage = () => {
 
       {sessionUser ? (
         <div className="buy-section">
-          <h1>{symbol.toUpperCase()}</h1>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value))}
-          />
-          <button
-            onClick={handleBuy}
-            disabled={!selectedPortfolioId || quantity <= 0}
-          >
-            Buy
-          </button>
+          <h1 className="buy-section-symbol">{symbol.toUpperCase()}</h1>
+          <button onClick={() => setShowModal(true)}>Buy Stock</button>
+          <button onClick={handleAddToWatchlist} className="watchlist-button">Add to Watchlist</button>
           {holding && (
             <p className="stock-detail-holding">
               You currently hold: {holding.quantity} shares
@@ -162,7 +206,6 @@ const StockDetailPage = () => {
         </p>
       )}
 
-      {/* 📉 Price + Change - now moved BELOW the buy section */}
       {!loading && !error && history.length > 1 && (
         <div className="stock-price-summary below-buy-section">
           <p className="current-price">
@@ -220,6 +263,24 @@ const StockDetailPage = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </div>
+      )}
+
+      {showModal && (
+        <BuyModal
+          symbol={symbol}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          onClose={() => setShowModal(false)}
+          onBuy={handleBuy}
+          portfolioId={selectedPortfolioId}
+        />
+      )}
+
+      {/* ✅ Toast message after purchase */}
+      {showToast && (
+        <div className="toast-message">
+          ✅ Purchase Successful!
         </div>
       )}
     </div>
