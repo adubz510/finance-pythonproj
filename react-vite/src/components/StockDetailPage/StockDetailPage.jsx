@@ -1,3 +1,4 @@
+// ...imports
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -11,9 +12,8 @@ import {
   CartesianGrid,
   ResponsiveContainer
 } from 'recharts';
-import BuyModal from '../BuyModal/BuyModal'; // Modal component
+import BuyModal from '../BuyModal/BuyModal';
 import './StockDetailPage.css';
-
 
 const StockDetailPage = () => {
   const { symbol } = useParams();
@@ -34,7 +34,7 @@ const StockDetailPage = () => {
 
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [showToast, setShowToast] = useState(false); // ✅ Toast state
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     fetch(`/api/stocks/${symbol}/info`)
@@ -74,7 +74,7 @@ const StockDetailPage = () => {
           setHistory([]);
         } else {
           setError(null);
-          setHistory(data);
+          setHistory([...data].reverse()); // ✅ Reverse so oldest → newest
         }
         setLoading(false);
       })
@@ -93,9 +93,7 @@ const StockDetailPage = () => {
       });
   }, [symbol, selectedPortfolioId]);
 
-
   const handleAddToWatchlist = async () => {
-    // First, fetch stock info to get the stock_id
     const resInfo = await fetch(`/api/stocks/${symbol}`);
     const stock = await resInfo.json();
 
@@ -115,8 +113,6 @@ const StockDetailPage = () => {
     }
   };
 
-
-
   const handleBuy = async () => {
     const res = await fetch(`/api/holdings/buy?portfolio_id=${selectedPortfolioId}`, {
       method: 'POST',
@@ -131,19 +127,13 @@ const StockDetailPage = () => {
       setHolding(data.holding);
       setShowToast(true);
 
-      // ✅ Update portfolios (so balance and holdings reflect change)
       const updated = await fetch('/api/portfolios');
       const updatedData = await updated.json();
-      if (updatedData.portfolios) {
-        setPortfolios(updatedData.portfolios);
-      }
+      if (updatedData.portfolios) setPortfolios(updatedData.portfolios);
 
-      // ✅ Re-fetch user to update total balance
       const userRes = await fetch('/api/auth/');
       const userData = await userRes.json();
-      if (userData && userData.id) {
-        setUser(userData);
-      }
+      if (userData && userData.id) setUser(userData);
     } else {
       setPurchaseMessage(`❌ ${data.error}`);
     }
@@ -153,16 +143,20 @@ const StockDetailPage = () => {
     setShowModal(false);
   };
 
+  const latestPrice = history.length > 0 ? history[history.length - 1].close.toFixed(2) : null;
+  const prevPrice = history.length > 1 ? history[history.length - 2].close : null;
+  const percentChange = prevPrice ? (((history[history.length - 1].close - prevPrice) / prevPrice) * 100).toFixed(2) : null;
+
   return (
     <div className="stock-detail-container">
       <h1 className="stock-detail-title">Stock: {symbol?.toUpperCase()}</h1>
 
       {user && (
         <p className="account-balance">
-        Account Balance: ${user.total_balance.toLocaleString(undefined, {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-})}
+          Account Balance: ${user.total_balance.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}
         </p>
       )}
 
@@ -185,9 +179,7 @@ const StockDetailPage = () => {
 
       {loading && <p className="stock-detail-loading">Loading stock data...</p>}
       {error && <p className="stock-detail-error">{error}</p>}
-      {purchaseMessage && (
-        <p className="stock-detail-message">{purchaseMessage}</p>
-      )}
+      {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>}
 
       {sessionUser ? (
         <div className="buy-section">
@@ -208,27 +200,14 @@ const StockDetailPage = () => {
 
       {!loading && !error && history.length > 1 && (
         <div className="stock-price-summary below-buy-section">
-          <p className="current-price">
-            Current Price: ${history[history.length - 1].close.toFixed(2)}
-          </p>
+          <p className="current-price">Current Price: ${latestPrice}</p>
           <p
             className="percent-change"
             style={{
-              color:
-                history[history.length - 1].close >
-                history[history.length - 2].close
-                  ? 'green'
-                  : 'red'
+              color: percentChange > 0 ? 'green' : 'red'
             }}
           >
-            Change:{' '}
-            {(
-              ((history[history.length - 1].close -
-                history[history.length - 2].close) /
-                history[history.length - 2].close) *
-              100
-            ).toFixed(2)}
-            %
+            Change: {percentChange}%
           </p>
         </div>
       )}
@@ -249,17 +228,27 @@ const StockDetailPage = () => {
           </div>
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={history}>
-                <XAxis dataKey="date" />
-                <YAxis dataKey="close" domain={['auto', 'auto']} />
+              <LineChart data={history}
+              margin={{ top: 10, right: 20, bottom: 30, left: 50 }}>
+
+              <XAxis
+                dataKey="date"
+                interval="preserveStartEnd"
+                tick={{ fontSize: 12 }}
+                tickFormatter={(date) => {
+                  const d = new Date(date);
+                  const mm = String(d.getMonth() + 1).padStart(2, '0');
+                  const dd = String(d.getDate()).padStart(2, '0');
+                  const yyyy = d.getFullYear();
+                  return `${mm}/${dd}/${yyyy}`;
+                }}
+                angle={-45}
+                textAnchor="end"
+                />
+                <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
                 <Tooltip />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <Line
-                  type="monotone"
-                  dataKey="close"
-                  stroke="#6c63ff"
-                  strokeWidth={2}
-                />
+                <Line type="monotone" dataKey="close" stroke="#6c63ff" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -277,7 +266,6 @@ const StockDetailPage = () => {
         />
       )}
 
-      {/* ✅ Toast message after purchase */}
       {showToast && (
         <div className="toast-message">
           ✅ Purchase Successful!
