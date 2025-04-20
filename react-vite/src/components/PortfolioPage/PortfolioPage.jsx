@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import AddPortfolioModal from "./AddPortfolioModal";
 import DeletePortfolioModal from "./DeletePortfolioModal";
+import AddMoneyModal from "../PortfolioDetails/AddMoneyModal";
 import "./PortfolioPage.css"
+import AddUserMoneyModal from "./AddUserMoneyModal";
 
 const PortfolioPage = () => {
   const dispatch = useDispatch();
@@ -75,12 +77,19 @@ const PortfolioPage = () => {
 
   const totalBalance = portfolios?.reduce((sum, p) => sum + p.balance, 0) ?? 0;
 
+  const handleAddUserMoney = () => {
+    setModalContent(<AddUserMoneyModal />);
+    setModalVisible(true);
+  };
+
+
   return (
     <div className="portfolio-page">
       <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
       <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
       <p><strong>Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)}</p>
-  
+      
+      <button onClick={handleAddUserMoney}>Add Money to Balance</button>
       <button onClick={handleCreatePortfolio}>Add Portfolio</button>
   
       {portfolios && portfolios.length > 0 ? (

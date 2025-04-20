@@ -39,6 +39,10 @@ def update_user_balance():
     user = current_user
     data = request.get_json()
     amount = data.get('amount', 0)
+
+    if not isinstance(amount, (int, float)) or amount <= 0:
+        return jsonify({'error': 'Amount must be a positive number.'}), 400
+    
     user.total_balance += amount
     db.session.commit()
     return jsonify({'total_balance': user.total_balance})
