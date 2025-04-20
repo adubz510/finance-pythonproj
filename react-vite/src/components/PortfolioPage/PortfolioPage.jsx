@@ -98,7 +98,7 @@ const PortfolioPage = () => {
             <div key={portfolio.id} className="portfolio-card">
               <h3>{portfolio.name}</h3>
               <p>Portfolio Value: ${portfolioValues[portfolio.id]?.toFixed(2) || portfolio.balance.toFixed(2)}</p>
-              <div className="portfolio-buttons">
+              <div className="button-group">
               <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
               <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
               </div>

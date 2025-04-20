@@ -122,7 +122,7 @@ const StockDetailPage = () => {
           >
             {portfolios.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} (Portfolio Balance: ${p.balance.toFixed(2)})
+                {p.name}
               </option>
             ))}
           </select>
