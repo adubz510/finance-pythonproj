@@ -83,30 +83,6 @@ const PortfolioPage = () => {
   };
 
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  return (
-    <div className="portfolio-page">
-      <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
-      <h2>{userBalance !== null ? `${user.username}'s Balance: $${userBalance.toFixed(2)}` : "Loading balance..."}</h2>
-      <p><strong>Total Portfolios Balance:</strong> ${totalBalance.toFixed(2)}</p>
-
-      <button onClick={handleAddUserMoney}>Add Money to Balance</button>
-      <button onClick={handleCreatePortfolio}>Add Portfolio</button>
-
-      {portfolios && portfolios.length > 0 ? (
-        <div className="portfolio-list">
-          {portfolios.map((portfolio) => (
-            <div key={portfolio.id} className="portfolio-card">
-              <h3>{portfolio.name}</h3>
-              <p>Portfolio Value: ${portfolioValues[portfolio.id]?.toFixed(2) || portfolio.balance.toFixed(2)}</p>
-              <div className="button-group">
-              <button onClick={() => navigate(`/portfolios/${portfolio.id}`)}>View Portfolio</button>
-              <button onClick={() => handleDeletePortfolio(portfolio)}>Delete Portfolio</button>
-              </div>
-=======
-=======
->>>>>>> Stashed changes
  return (
   <div className="portfolio-page">
     <h1>{user ? `${user.username}'s Portfolios` : "Your Portfolios"}</h1>
@@ -150,10 +126,6 @@ const PortfolioPage = () => {
               <button onClick={() => handleDeletePortfolio(portfolio)}>
                 Delete Portfolio
               </button>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
             </div>
           </div>
         ))}
