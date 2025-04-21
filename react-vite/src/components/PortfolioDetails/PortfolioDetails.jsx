@@ -300,7 +300,7 @@ const PortfolioDetails = () => {
         <AddMoneyModal
           portfolioId={portfolio.id}
           onClose={closeAddMoneyModal}
-          onAddMoney={(amount, portfolioId, closeModal) => dispatch(thunkUpdateBalance(amount, portfolioId)).then(closeModal)}
+          onAddMoney={addMoney}
         />
       )}
     </div>
