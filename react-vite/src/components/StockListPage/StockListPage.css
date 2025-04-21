@@ -5,12 +5,13 @@
   margin: 40px auto;
   padding: 0 20px;
   font-family: 'Segoe UI', sans-serif;
+  padding-top: 110px;
 }
 
 .stock-list-page h1 {
   text-align: center;
   font-size: 2rem;
-  color: #4c4cff; /* matching your logo's purple */
+  color: #ffffff; /* matching your logo's purple */
   margin-bottom: 20px;
 }
 

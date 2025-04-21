@@ -2,33 +2,34 @@
     padding: 40px;
     color: #f3f4f6;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 150px;
   }
-  
+
   .portfolio-page h1 {
     font-size: 40px;
     margin-bottom: 16px;
     color: #e5e7eb;
   }
-  
+
   .portfolio-page h2 {
     font-size: 32px;
     margin-bottom: 16px;
     color: #d1d5db;
   }
-  
+
   .portfolio-page p {
     font-size: 20px;
     margin-bottom: 16px;
     color: #d4d4d4;
   }
-  
+
   .portfolio-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
     margin-top: 32px;
   }
-  
+
   .portfolio-card {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -37,23 +38,23 @@
     backdrop-filter: blur(4px);
     transition: transform 0.2s;
   }
-  
+
   .portfolio-card:hover {
     transform: translateY(-3px);
   }
-  
+
   .portfolio-card h3 {
     font-size: 24px;
     margin-bottom: 8px;
     color: #f9fafb;
   }
-  
+
   .portfolio-card p {
     font-size: 18px;
     margin-bottom: 16px;
     color: #e5e7eb;
   }
-  
+
   button {
     padding: 12px 18px;
     margin-right: 10px;
@@ -69,15 +70,15 @@
 
   .button-group {
     display: flex;
-    gap: 12px; 
+    gap: 12px;
     flex-wrap: wrap;
     margin-top: 8px;
   }
-  
+
   button:hover {
     background-color: #1d4ed8;
   }
-  
+
   .empty-portfolio {
     color: #d1d5db;
     font-size: 20px;

@@ -11,6 +11,7 @@
   font-family: 'Segoe UI', sans-serif;
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 60px;
 }
 
 .brand {
@@ -53,6 +54,7 @@
 
 .search-bar {
   padding-left: 10%;
+  position: relative;
 }
 
 .search-bar input {
@@ -66,7 +68,7 @@
 
 .auth1-btn {
   display: flex;
-  gap: 0.9rem; 
+  gap: 0.9rem;
 }
 
 .login-btn {
@@ -94,4 +96,24 @@
   text-decoration: none;
   cursor: pointer;
 }
+.toast-message.under-search {
+  position: absolute;
+  left: 105%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
 
+@keyframes fade-in-out {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}

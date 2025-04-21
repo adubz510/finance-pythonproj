@@ -148,6 +148,7 @@ const StockDetailPage = () => {
   const percentChange = prevPrice ? (((history[history.length - 1].close - prevPrice) / prevPrice) * 100).toFixed(2) : null;
 
   return (
+
     <div className="stock-detail-container">
       <h1 className="stock-detail-title">Stock: {symbol?.toUpperCase()}</h1>
 

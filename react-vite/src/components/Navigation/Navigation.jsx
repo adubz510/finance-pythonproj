@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 import LogoutButton from "../Navigation/LogoutButton";
 import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
@@ -7,6 +8,30 @@ import logo from "/src/webull-logo.svg";
 
 const Navigation = () => {
   const user = useSelector(state => state.session.user);
+  const [query, setQuery] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!query.trim()) {
+      setToastMessage("Please enter a stock symbol or name.");
+      setTimeout(() => setToastMessage(""), 3000);
+      return;
+    }
+
+    const res = await fetch(`/api/stocks/search?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    if (res.ok && data.length > 0) {
+      navigate(`/stocks/${data[0].symbol}`);
+    } else {
+      setToastMessage("❌ Stock not found.");
+      setTimeout(() => setToastMessage(""), 3000);
+    }
+
+    setQuery("");
+  };
 
   return (
     <nav className="webull-navbar">
@@ -34,8 +59,19 @@ const Navigation = () => {
         </ul>
       </div>
 
+      {/* ✅ Search Bar */}
       <div className="search-bar">
-        <input type="text" placeholder="Symbol/Name" />
+        <form onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Symbol/Name"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button type="submit">Search</button>
+        </form>
+        {/* ✅ Toast below input */}
+        {toastMessage && <div className="toast-message under-search">{toastMessage}</div>}
       </div>
 
       <div className="auth1-btn">
