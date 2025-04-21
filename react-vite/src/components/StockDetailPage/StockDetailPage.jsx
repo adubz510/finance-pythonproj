@@ -150,7 +150,9 @@ const StockDetailPage = () => {
   return (
 
     <div className="stock-detail-container">
-      <h1 className="stock-detail-title">Stock: {symbol?.toUpperCase()}</h1>
+<h1 className="stock-detail-title">
+  {stockInfo?.name || `Stock: ${symbol?.toUpperCase()}`}
+</h1>
 
       {user && (
         <p className="account-balance">
@@ -228,31 +230,51 @@ const StockDetailPage = () => {
             </select>
           </div>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={history}
-              margin={{ top: 10, right: 20, bottom: 30, left: 50 }}>
+  <ResponsiveContainer width="100%" height={400}>
+    <LineChart
+      data={history}
+      margin={{ top: 10, right: 20, bottom: 30, left: 50 }}
+    >
+      {/* Gradient Definition */}
+      <defs>
+        <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#6c63ff" stopOpacity={0.4} />
+          <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
+        </linearGradient>
+      </defs>
 
-              <XAxis
-                dataKey="date"
-                interval="preserveStartEnd"
-                tick={{ fontSize: 12 }}
-                tickFormatter={(date) => {
-                  const d = new Date(date);
-                  const mm = String(d.getMonth() + 1).padStart(2, '0');
-                  const dd = String(d.getDate()).padStart(2, '0');
-                  const yyyy = d.getFullYear();
-                  return `${mm}/${dd}/${yyyy}`;
-                }}
-                angle={-45}
-                textAnchor="end"
-                />
-                <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
-                <Tooltip />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="close" stroke="#6c63ff" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+      <XAxis
+        dataKey="date"
+        interval="preserveStartEnd"
+        tick={{ fontSize: 12 }}
+        tickFormatter={(date) => {
+          const d = new Date(date);
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          const yyyy = d.getFullYear();
+          return `${mm}/${dd}/${yyyy}`;
+        }}
+        angle={-45}
+        textAnchor="end"
+      />
+      <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
+      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+      <Tooltip />
+
+      {/* Line with gradient fill */}
+      <Line
+        type="monotone"
+        dataKey="close"
+        stroke="#6c63ff"
+        strokeWidth={2}
+        dot={false}
+        fillOpacity={1}
+        fill="url(#colorClose)"
+      />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
+
         </div>
       )}
 
