@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from 'react';
-import "./WatchlistPage.css";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -67,7 +66,8 @@ const Watchlist = () => {
   };
 
   return (
-    <div className="watchlist_">
+    <div className="watchlist">
+      <h1>My Watchlist</h1>
       <form onSubmit={handleAddStock} className="space-x-2">
         <input
           type="string"
@@ -76,7 +76,7 @@ const Watchlist = () => {
           onChange={(e) => setStockId(e.target.value)}
           className="border p-2 rounded"
         />
-        <button type="submit" className="submit-btn">
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
           Add Stock
         </button>
       </form>
@@ -84,10 +84,10 @@ const Watchlist = () => {
       <ul className="divide-y">
         {stocks.map((stock) => (
           <li key={stock.id} className="py-2 flex justify-between">
-            <span>{stock.symbol} {stock.name ? `- ${stock.name}` : ""}</span>
+            <span>{stock.symbol} {stock.name ? `- ${stock.name}` : "" }</span>
             <button
               onClick={() => handleRemoveStock(stock.id)}
-              className="remove-btn"
+              className="text-red-600 hover:underline"
             >
               Remove
             </button>

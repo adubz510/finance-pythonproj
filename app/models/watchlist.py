@@ -1,6 +1,5 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 
-# Association table for many-to-many relationship between Watchlist and Stock
 class WatchlistStock(db.Model):
     __tablename__ = 'watchlist_stocks'
 

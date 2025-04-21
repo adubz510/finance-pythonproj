@@ -50,6 +50,7 @@ def remove_stock(stock_id):
 
     db.session.delete(entry)
     db.session.commit()
+<<<<<<< HEAD
     return jsonify({'message': 'Stock removed from watchlist'}), 200
 
 
@@ -84,3 +85,6 @@ def add_to_watchlist_by_symbol():
     db.session.commit()
 
     return jsonify({'message': f'{symbol.upper()} added to watchlist'}), 201
+=======
+    return jsonify({'message': 'Stock removed from watchlist'}), 200
+>>>>>>> 5be0de8 (cont work on watchlist frontend, fixed layout throughout entire site attempt 2)

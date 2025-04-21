@@ -42,6 +42,7 @@ app.register_blueprint(portfolio_routes, url_prefix='/api/portfolios')  # Portfo
 app.register_blueprint(holding_routes, url_prefix='/api/holdings')
 app.register_blueprint(stocks_routes,url_prefix='/api/stocks')
 app.register_blueprint(transaction_routes, url_prefix='/api/transactions')
+app.register_blueprint(watchlist_routes, url_prefix='/api/watchlist')
 
 
 # Initialize database and migrations
