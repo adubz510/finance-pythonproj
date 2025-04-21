@@ -69,65 +69,67 @@ const BuyStockModal = ({
   };
 
   return (
-    <div className="modal">
-      <h2>Buy Stock</h2>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleBuy();
-        }}
-      >
-        <label>
-          Select Stock
-          <select
-            value={selectedSymbol}
-            onChange={(e) => setSelectedSymbol(e.target.value)}
-            required
-          >
-            {availableStocks.map((stock) => (
-              <option key={stock.id} value={stock.symbol}>
-                {stock.symbol} - {stock.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        {selectedSymbol && stockPrices[selectedSymbol] && (
-          <p>
-            <strong>Current Price:</strong> ${stockPrices[selectedSymbol].toFixed(2)}
-          </p>
-        )}
-
-        <label>
-          Number of Shares
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            placeholder="e.g. 5"
-            required
-          />
-        </label>
-
-        {selectedSymbol && stockPrices[selectedSymbol] && quantity > 0 && (
-          <p>
-            <strong>Total Cost:</strong> $
-            {(stockPrices[selectedSymbol] * quantity).toFixed(2)}
-          </p>
-        )}
-
-        {errorMessage && <p>{errorMessage}</p>}
-
-        <div className="buy-modal-buttons">
-          <button type="submit" className="confirm-button">
-            Confirm Buy
-          </button>
-          <button type="button" className="cancel-button" onClick={onClose}>
-            Cancel
-          </button>
-        </div>
-      </form>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>Buy Stock</h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleBuy();
+          }}
+        >
+          <label>
+            Select Stock
+            <select
+              value={selectedSymbol}
+              onChange={(e) => setSelectedSymbol(e.target.value)}
+              required
+            >
+              {availableStocks.map((stock) => (
+                <option key={stock.id} value={stock.symbol}>
+                  {stock.symbol} - {stock.name}
+                </option>
+              ))}
+            </select>
+          </label>
+  
+          {selectedSymbol && stockPrices[selectedSymbol] && (
+            <p>
+              <strong>Current Price:</strong> ${stockPrices[selectedSymbol].toFixed(2)}
+            </p>
+          )}
+  
+          <label>
+            Number of Shares
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              placeholder="e.g. 5"
+              required
+            />
+          </label>
+  
+          {selectedSymbol && stockPrices[selectedSymbol] && quantity > 0 && (
+            <p>
+              <strong>Total Cost:</strong> $
+              {(stockPrices[selectedSymbol] * quantity).toFixed(2)}
+            </p>
+          )}
+  
+          {errorMessage && <p>{errorMessage}</p>}
+  
+          <div className="buy-modal-buttons">
+            <button type="submit" className="confirm-button">
+              Confirm Buy
+            </button>
+            <button type="button" className="cancel-button" onClick={onClose}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
