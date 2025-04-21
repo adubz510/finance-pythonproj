@@ -10,13 +10,8 @@
 
 .stock-list-page h1 {
   text-align: center;
-<<<<<<< HEAD
-  font-size: 2rem;
-  color: #ffffff; /* matching your logo's purple */
-=======
   font-size: 3rem;
   color: white;
->>>>>>> 5be0de8 (cont work on watchlist frontend, fixed layout throughout entire site attempt 2)
   margin-bottom: 20px;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
