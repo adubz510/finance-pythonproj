@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import "./WatchlistPage.css";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -66,7 +67,7 @@ const Watchlist = () => {
   };
 
   return (
-    <div className="watchlist">
+    <div className="watchlist_">
       <h1>My Watchlist</h1>
       <form onSubmit={handleAddStock} className="space-x-2">
         <input
