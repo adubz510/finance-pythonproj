@@ -122,8 +122,9 @@
 
 .stock-detail-message {
   font-weight: 600;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   color: #fef08a;
+  /* padding-bottom : 10px; */
 }
 
 .chart-section {
@@ -153,6 +154,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  padding-top: 15px;
 }
 
 .stock-detail-title {
@@ -208,4 +210,16 @@
 
 .watchlist-button:hover {
   background-color: #059669;
+}
+
+
+.stock-messages {
+  min-height: 24px; /* adjust based on font-size/spacing */
+  margin-bottom: 10px;
+}
+
+.stock-detail-loading,
+.stock-detail-error,
+.stock-detail-message {
+  transition: opacity 0.3s ease;
 }

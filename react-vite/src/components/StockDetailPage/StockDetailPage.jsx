@@ -181,9 +181,9 @@ const StockDetailPage = () => {
         </div>
       )}
 
-      {loading && <p className="stock-detail-loading">Loading stock data...</p>}
+      {/* {loading && <p className="stock-detail-loading">Loading stock data...</p>}
       {error && <p className="stock-detail-error">{error}</p>}
-      {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>}
+      {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>} */}
 
       {sessionUser ? (
         <div className="buy-section">
@@ -208,6 +208,11 @@ const StockDetailPage = () => {
             Change: {percentChange}%
           </p>
         </div>
+
+      //    {/* {loading && <p className="stock-detail-loading">Loading stock data...</p>}
+      // {error && <p className="stock-detail-error">{error}</p>}
+      // {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>} */}
+
       ) : (
         <p style={{ marginTop: '2rem', fontStyle: 'italic', color: 'white' }}>
           Please log in to buy this stock or manage your portfolio.
@@ -227,6 +232,11 @@ const StockDetailPage = () => {
           </p> */}
         </div>
       )}
+<div className="stock-messages">
+  {loading && <p className="stock-detail-loading">Loading stock data...</p>}
+  {error && <p className="stock-detail-error">{error}</p>}
+  {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>}
+</div>
 
       {!loading && !error && history.length > 0 && (
         <div className="chart-section">
