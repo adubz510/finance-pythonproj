@@ -17,8 +17,6 @@ from .api.watchlist_routes import watchlist_routes
 from .seeds import seed_commands
 from .config import Config
 
-
-
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
 # Setup login manager
@@ -47,7 +45,8 @@ app.register_blueprint(watchlist_routes, url_prefix='/api/watchlist')
 
 # Initialize database and migrations
 db.init_app(app)
-Migrate(app, db)
+migrate = Migrate(app, db)
+
 
 
 @event.listens_for(Engine, "connect")
