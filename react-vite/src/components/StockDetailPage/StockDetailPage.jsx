@@ -25,6 +25,8 @@ const StockDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [stockInfo, setStockInfo] = useState(null);
+  const [watchlistMessage, setWatchlistMessage] = useState("");
+  const [watchlistType, setWatchlistType] = useState("success");
 
   const [user, setUser] = useState(null);
   const [portfolios, setPortfolios] = useState([]);
@@ -75,7 +77,7 @@ const StockDetailPage = () => {
           setHistory([]);
         } else {
           setError(null);
-          setHistory([...data].reverse()); // ✅ Reverse so oldest → newest
+          setHistory([...data].reverse());
         }
         setLoading(false);
       })
@@ -95,22 +97,40 @@ const StockDetailPage = () => {
   }, [symbol, selectedPortfolioId]);
 
   const handleAddToWatchlist = async () => {
-    const resInfo = await fetch(`/api/stocks/${symbol}`);
-    const stock = await resInfo.json();
+    try {
+      const resInfo = await fetch(`/api/stocks/${symbol}`);
+      const stock = await resInfo.json();
 
-    const res = await fetch('/api/watchlist', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ stock_id: stock.id })
-    });
+      const res = await fetch('/api/watchlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stock_id: stock.id })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
-      alert(`✅ ${symbol.toUpperCase()} added to your watchlist`);
-      navigate('/watchlist');
-    } else {
-      alert(`❌ ${data.error || data.message}`);
+      if (res.ok) {
+        if (data.message === 'Stock already in watchlist') {
+          setWatchlistType("error");
+          setWatchlistMessage(`⚠️ ${symbol.toUpperCase()} is already in your watchlist.`);
+          setTimeout(() => setWatchlistMessage(""), 3000);
+          return;
+        }
+
+        setWatchlistType("success");
+        setWatchlistMessage(`✅ ${symbol.toUpperCase()} added to your watchlist`);
+        setTimeout(() => {
+          navigate('/watchlist');
+        }, 2000);
+      } else {
+        setWatchlistType("error");
+        setWatchlistMessage(`❌ ${data.error || data.message}`);
+        setTimeout(() => setWatchlistMessage(""), 3000);
+      }
+    } catch (err) {
+      setWatchlistType("error");
+      setWatchlistMessage("❌ Failed to add to watchlist.");
+      setTimeout(() => setWatchlistMessage(""), 3000);
     }
   };
 
@@ -149,11 +169,10 @@ const StockDetailPage = () => {
   const percentChange = prevPrice ? (((history[history.length - 1].close - prevPrice) / prevPrice) * 100).toFixed(2) : null;
 
   return (
-
     <div className="stock-detail-container">
-<h1 className="stock-detail-title">
-  {stockInfo?.name || `Stock: ${symbol?.toUpperCase()}`}
-</h1>
+      <h1 className="stock-detail-title">
+        {stockInfo?.name || `Stock: ${symbol?.toUpperCase()}`}
+      </h1>
 
       {user && (
         <p className="account-balance">
@@ -181,10 +200,6 @@ const StockDetailPage = () => {
         </div>
       )}
 
-      {/* {loading && <p className="stock-detail-loading">Loading stock data...</p>}
-      {error && <p className="stock-detail-error">{error}</p>}
-      {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>} */}
-
       {sessionUser ? (
         <div className="buy-section">
           <h1 className="buy-section-symbol">{symbol.toUpperCase()}</h1>
@@ -194,49 +209,32 @@ const StockDetailPage = () => {
             <p className="stock-detail-holding">
               You currently hold: {holding.quantity} shares
             </p>
-
-
-
           )}
-           <p className="current-price">Current Price: ${latestPrice}</p>
+          <p className="current-price">Current Price: ${latestPrice}</p>
           <p
             className="percent-change"
-            style={{
-              color: percentChange > 0 ? '#bbf7d0' : 'red'
-            }}
+            style={{ color: percentChange > 0 ? '#bbf7d0' : 'red' }}
           >
             Change: {percentChange}%
           </p>
         </div>
-
-      //    {/* {loading && <p className="stock-detail-loading">Loading stock data...</p>}
-      // {error && <p className="stock-detail-error">{error}</p>}
-      // {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>} */}
-
       ) : (
         <p style={{ marginTop: '2rem', fontStyle: 'italic', color: 'white' }}>
           Please log in to buy this stock or manage your portfolio.
         </p>
       )}
 
-      {!loading && !error && history.length > 1 && (
-        <div className="stock-price-summary below-buy-section">
-          {/* <p className="current-price">Current Price: ${latestPrice}</p>
-          <p
-            className="percent-change"
-            style={{
-              color: percentChange > 0 ? '#bbf7d0' : 'red'
-            }}
-          >
-            Change: {percentChange}%
-          </p> */}
+      {watchlistMessage && (
+        <div className={`toast-message watchlist-toast ${watchlistType}`}>
+          {watchlistMessage}
         </div>
       )}
-<div className="stock-messages">
-  {loading && <p className="stock-detail-loading">Loading stock data...</p>}
-  {error && <p className="stock-detail-error">{error}</p>}
-  {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>}
-</div>
+
+      <div className="stock-messages">
+        {loading && <p className="stock-detail-loading">Loading stock data...</p>}
+        {error && <p className="stock-detail-error">{error}</p>}
+        {purchaseMessage && <p className="stock-detail-message">{purchaseMessage}</p>}
+      </div>
 
       {!loading && !error && history.length > 0 && (
         <div className="chart-section">
@@ -253,57 +251,33 @@ const StockDetailPage = () => {
             </select>
           </div>
           <div className="chart-container">
-  <ResponsiveContainer width="100%" height={400}>
-  <LineChart
-    data={history}
-    margin={{ top: 10, right: 20, bottom: 30, left: 50 }}
-  >
-    {/* Gradient definition */}
-    <defs>
-      <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#6c63ff" stopOpacity={0.5} />
-        <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
-      </linearGradient>
-    </defs>
-
-    <XAxis
-      dataKey="date"
-      interval="preserveStartEnd"
-      tick={{ fontSize: 12 }}
-      tickFormatter={(date) => {
-        const d = new Date(date);
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        const yyyy = d.getFullYear();
-        return `${mm}/${dd}/${yyyy}`;
-      }}
-      angle={-45}
-      textAnchor="end"
-    />
-    <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
-    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-    <Tooltip />
-
-    {/* This renders the filled area under the line */}
-    <Area
-      type="monotone"
-      dataKey="close"
-      stroke="none"
-      fill="url(#colorClose)"
-    />
-
-    {/* This is the visible line on top of the area */}
-    <Line
-      type="monotone"
-      dataKey="close"
-      stroke="#6c63ff"
-      strokeWidth={2}
-      dot={false}
-    />
-  </LineChart>
-</ResponsiveContainer>
-</div>
-
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={history} margin={{ top: 10, right: 20, bottom: 30, left: 50 }}>
+                <defs>
+                  <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#6c63ff" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="date"
+                  interval="preserveStartEnd"
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={(date) => {
+                    const d = new Date(date);
+                    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+                  }}
+                  angle={-45}
+                  textAnchor="end"
+                />
+                <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <Tooltip />
+                <Area type="monotone" dataKey="close" stroke="none" fill="url(#colorClose)" />
+                <Line type="monotone" dataKey="close" stroke="#6c63ff" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
 

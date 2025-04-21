@@ -223,3 +223,42 @@
 .stock-detail-message {
   transition: opacity 0.3s ease;
 }
+
+
+.toast-message.watchlist-toast {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #10b981; /* ✅ Green success color */
+  color: white;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  animation: fadeInOut 2.5s ease-in-out forwards;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.toast-message.success {
+  background-color: #22c55e;
+  color: white;
+}
+
+.toast-message.error {
+  background-color: #fc2600dc;
+  color: white;
+}
+
+
+
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -10px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}

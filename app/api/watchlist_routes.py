@@ -29,7 +29,7 @@ def add_stock():
 
     existing = WatchlistStock.query.filter_by(watchlist_id=watchlist.id, stock_id=stock_id).first()
     if existing:
-        return jsonify({'error': 'Stock already in watchlist'}), 200
+        return jsonify({'message': 'Stock already in watchlist'}), 200  # ✅ CHANGED FROM 'error' to 'message'
 
     new_entry = WatchlistStock(watchlist_id=watchlist.id, stock_id=stock_id)
     db.session.add(new_entry)
