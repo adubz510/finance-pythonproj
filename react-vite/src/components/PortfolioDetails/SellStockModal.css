@@ -1,17 +1,8 @@
-.sell-modal-overlay {
+.modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  
-  .sell-modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: linear-gradient(to bottom right, #0c1445, #2d4b8e);
     color: #f3f4f6;
     padding: 32px;
@@ -19,26 +10,27 @@
     max-width: 420px;
     width: 100%;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  .sell-modal h3 {
-    font-size: 28px;
+  .modal h2 {
+    font-size: 32px;
     font-weight: bold;
     margin-bottom: 20px;
     color: #ffffff;
   }
   
-  .sell-modal p {
-    margin-bottom: 16px;
-    font-size: 16px;
+  .modal form {
+    display: flex;
+    flex-direction: column;
   }
   
-  .sell-modal input {
-    width: 100%;
+  .modal input,
+  .modal select {
+    margin: 10px 0 20px;
     padding: 14px;
     font-size: 16px;
-    margin-bottom: 20px;
     border: none;
     border-radius: 8px;
     background-color: #1e293b;
@@ -46,18 +38,14 @@
     outline: none;
   }
   
-  .sell-modal input::placeholder {
+  .modal input::placeholder {
     color: #94a3b8;
   }
   
-  .sell-modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-  
-  .sell-modal-buttons button {
+  .modal button {
     padding: 12px 18px;
+    background-color: #2563eb;
+    color: white;
     border: none;
     border-radius: 8px;
     font-size: 16px;
@@ -66,22 +54,27 @@
     transition: background-color 0.3s;
   }
   
-  /* Confirm (Sell) button */
-  .sell-modal-buttons .confirm-button {
-    background-color: #2563eb;
-    color: white;
-  }
-  
-  .sell-modal-buttons .confirm-button:hover {
+  .modal button:hover {
     background-color: #1d4ed8;
   }
   
-  /* Cancel button */
-  .sell-modal-buttons .cancel-button {
-    background-color: #f43f5e;
-    color: white;
+  .modal p {
+    color: #f87171;
+    font-size: 16px;
+    margin-top: -10px;
+    margin-bottom: 10px;
   }
   
-  .sell-modal-buttons .cancel-button:hover {
+  .sell-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  
+  .cancel-button {
+    background-color: #f43f5e;
+  }
+  
+  .cancel-button:hover {
     background-color: #dc2626;
   }

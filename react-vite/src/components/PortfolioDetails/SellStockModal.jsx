@@ -48,9 +48,11 @@ const SellStockModal = ({ holdings, onClose, onSell }) => {
                     }}
                   />
                 </label>
-          
-                <button onClick={handleSell}>Confirm Sell</button>
-                <button onClick={onClose}>Cancel</button>
+                
+                <div className="sell-modal-buttons">
+                <button onClick={handleSell} className="confirm-button">Confirm Sell</button>
+                <button onClick={onClose} className="cancel-button">Cancel</button>
+                </div>
               </div>
             </div>
           );
