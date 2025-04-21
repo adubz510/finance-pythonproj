@@ -104,7 +104,7 @@ const BuyStockModal = ({
             type="number"
             min="1"
             value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
+            onChange={(e) => setQuantity(Number(e.target.value))}
             placeholder="e.g. 5"
             required
           />
