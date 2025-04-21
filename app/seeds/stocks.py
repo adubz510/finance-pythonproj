@@ -1,6 +1,10 @@
-# stocks.py
+# # stocks.py
+# from app.models import db, Stock
+# from sqlalchemy.sql import text
+
 from app.models import db, Stock
 from sqlalchemy.sql import text
+from app.models.db import environment, SCHEMA  #
 
 def seed_stocks():
     sample_stocks = [
@@ -16,7 +20,9 @@ def seed_stocks():
     db.session.bulk_save_objects(sample_stocks)
     db.session.commit()
 
-
 def undo_stocks():
-    db.session.execute(text("DELETE FROM stocks"))
+    if environment == "production":
+        db.session.execute(text(f"TRUNCATE table {SCHEMA}.stocks RESTART IDENTITY CASCADE;"))
+    else:
+        db.session.execute(text("DELETE FROM stocks"))
     db.session.commit()
