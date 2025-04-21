@@ -99,7 +99,6 @@ const Navigation = () => {
                         onFocus={() => query && setShowDropdown(true)}
                         onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     />
-                    <button type="submit">Search</button>
                 </form>
 
                 {/* 🔽 Dropdown Suggestions */}

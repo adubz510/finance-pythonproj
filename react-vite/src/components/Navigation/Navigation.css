@@ -95,6 +95,7 @@
   text-decoration: none;
   cursor: pointer;
   }
+
   .toast-message.under-search {
   position: absolute;
   left: 105%;
@@ -119,6 +120,7 @@
 
 
   .search-bar {
+  padding-top: 1.1%;
   position: relative;
   overflow: visible;
   }

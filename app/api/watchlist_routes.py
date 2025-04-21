@@ -51,3 +51,11 @@ def remove_stock(stock_id):
     db.session.delete(entry)
     db.session.commit()
     return jsonify({'message': 'Stock removed from watchlist'}), 200
+
+@watchlist_routes.route('/lookup/<string:symbol>', methods=['GET'])
+@login_required
+def lookup_stock_by_symbol(symbol):
+    stock = Stock.query.filter(Stock.symbol.ilike(symbol)).first()
+    if not stock:
+        return jsonify({'error': 'Stock not found'}), 404
+    return jsonify(stock.to_dict()), 200
