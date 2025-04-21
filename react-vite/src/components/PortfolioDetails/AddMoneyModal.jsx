@@ -22,8 +22,7 @@ const AddMoneyModal = ({ portfolioId, onClose, onAddMoney }) => {
   }
 
     try {
-        onAddMoney(parseFloat(amount), portfolioId);
-        onClose();
+        onAddMoney(parseFloat(amount), portfolioId, onClose);
     } catch (err) {
         console.error("Failed to add money:", err);
         alert("Failed to add moneu. Please try again.")
