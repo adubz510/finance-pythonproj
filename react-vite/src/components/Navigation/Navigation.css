@@ -117,3 +117,31 @@
   90% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-10px); }
 }
+
+
+.search-bar {
+  position: relative;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 999;
+  border-radius: 4px;
+}
+
+.search-dropdown li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.search-dropdown li:hover {
+  background-color: #f3f3f3;
+}

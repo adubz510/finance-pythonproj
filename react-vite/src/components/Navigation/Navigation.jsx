@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoutButton from "../Navigation/LogoutButton";
 import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
@@ -9,6 +9,8 @@ import logo from "/src/webull-logo.svg";
 const Navigation = () => {
   const user = useSelector(state => state.session.user);
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
 
@@ -31,6 +33,32 @@ const Navigation = () => {
     }
 
     setQuery("");
+    setResults([]);
+    setShowDropdown(false);
+  };
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    const delay = setTimeout(async () => {
+      const res = await fetch(`/api/stocks/search?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      setResults(data);
+      setShowDropdown(true);
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, [query]);
+
+  const handleSelect = (symbol) => {
+    navigate(`/stocks/${symbol}`);
+    setQuery("");
+    setResults([]);
+    setShowDropdown(false);
   };
 
   return (
@@ -59,7 +87,7 @@ const Navigation = () => {
         </ul>
       </div>
 
-      {/* ✅ Search Bar */}
+      {/* 🔍 Search Bar with Dropdown */}
       <div className="search-bar">
         <form onSubmit={handleSearch}>
           <input
@@ -67,10 +95,24 @@ const Navigation = () => {
             placeholder="Symbol/Name"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => query && setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
           />
           <button type="submit">Search</button>
         </form>
-        {/* ✅ Toast below input */}
+
+        {/* 🔽 Dropdown Suggestions */}
+        {showDropdown && results.length > 0 && (
+          <ul className="search-dropdown">
+            {results.map((stock) => (
+              <li key={stock.id} onClick={() => handleSelect(stock.symbol)}>
+                {stock.symbol} - {stock.name}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* 🟩 Toast Message */}
         {toastMessage && <div className="toast-message under-search">{toastMessage}</div>}
       </div>
 

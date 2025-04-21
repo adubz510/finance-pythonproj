@@ -10,7 +10,8 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Area
 } from 'recharts';
 import BuyModal from '../BuyModal/BuyModal';
 import './StockDetailPage.css';
@@ -193,7 +194,19 @@ const StockDetailPage = () => {
             <p className="stock-detail-holding">
               You currently hold: {holding.quantity} shares
             </p>
+
+
+
           )}
+           <p className="current-price">Current Price: ${latestPrice}</p>
+          <p
+            className="percent-change"
+            style={{
+              color: percentChange > 0 ? '#bbf7d0' : 'red'
+            }}
+          >
+            Change: {percentChange}%
+          </p>
         </div>
       ) : (
         <p style={{ marginTop: '2rem', fontStyle: 'italic', color: 'white' }}>
@@ -203,22 +216,22 @@ const StockDetailPage = () => {
 
       {!loading && !error && history.length > 1 && (
         <div className="stock-price-summary below-buy-section">
-          <p className="current-price">Current Price: ${latestPrice}</p>
+          {/* <p className="current-price">Current Price: ${latestPrice}</p>
           <p
             className="percent-change"
             style={{
-              color: percentChange > 0 ? 'green' : 'red'
+              color: percentChange > 0 ? '#bbf7d0' : 'red'
             }}
           >
             Change: {percentChange}%
-          </p>
+          </p> */}
         </div>
       )}
 
       {!loading && !error && history.length > 0 && (
         <div className="chart-section">
           <div className="chart-header">
-            <h3>Price Chart</h3>
+            <h1>Price Chart</h1>
             <select
               id="timeframe-select"
               value={timeframe}
@@ -231,48 +244,54 @@ const StockDetailPage = () => {
           </div>
           <div className="chart-container">
   <ResponsiveContainer width="100%" height={400}>
-    <LineChart
-      data={history}
-      margin={{ top: 10, right: 20, bottom: 30, left: 50 }}
-    >
-      {/* Gradient Definition */}
-      <defs>
-        <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#6c63ff" stopOpacity={0.4} />
-          <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
-        </linearGradient>
-      </defs>
+  <LineChart
+    data={history}
+    margin={{ top: 10, right: 20, bottom: 30, left: 50 }}
+  >
+    {/* Gradient definition */}
+    <defs>
+      <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#6c63ff" stopOpacity={0.5} />
+        <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
+      </linearGradient>
+    </defs>
 
-      <XAxis
-        dataKey="date"
-        interval="preserveStartEnd"
-        tick={{ fontSize: 12 }}
-        tickFormatter={(date) => {
-          const d = new Date(date);
-          const mm = String(d.getMonth() + 1).padStart(2, '0');
-          const dd = String(d.getDate()).padStart(2, '0');
-          const yyyy = d.getFullYear();
-          return `${mm}/${dd}/${yyyy}`;
-        }}
-        angle={-45}
-        textAnchor="end"
-      />
-      <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
-      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-      <Tooltip />
+    <XAxis
+      dataKey="date"
+      interval="preserveStartEnd"
+      tick={{ fontSize: 12 }}
+      tickFormatter={(date) => {
+        const d = new Date(date);
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${mm}/${dd}/${yyyy}`;
+      }}
+      angle={-45}
+      textAnchor="end"
+    />
+    <YAxis dataKey="close" domain={['auto', 'auto']} orientation="right" />
+    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+    <Tooltip />
 
-      {/* Line with gradient fill */}
-      <Line
-        type="monotone"
-        dataKey="close"
-        stroke="#6c63ff"
-        strokeWidth={2}
-        dot={false}
-        fillOpacity={1}
-        fill="url(#colorClose)"
-      />
-    </LineChart>
-  </ResponsiveContainer>
+    {/* This renders the filled area under the line */}
+    <Area
+      type="monotone"
+      dataKey="close"
+      stroke="none"
+      fill="url(#colorClose)"
+    />
+
+    {/* This is the visible line on top of the area */}
+    <Line
+      type="monotone"
+      dataKey="close"
+      stroke="#6c63ff"
+      strokeWidth={2}
+      dot={false}
+    />
+  </LineChart>
+</ResponsiveContainer>
 </div>
 
         </div>

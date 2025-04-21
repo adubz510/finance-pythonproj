@@ -69,10 +69,13 @@
 .current-price {
   font-weight: bold;
   color: #bbf7d0;
+  font-size: 20px;
+  padding-top: 10px;
 }
 
 .percent-change {
   font-weight: bold;
+  font-size: 20px;
 }
 
 .buy-section {
@@ -134,11 +137,15 @@
 
 .chart-container {
   background-color: white;
-  border-radius: 16px;
-  padding: 40px;
+  border-radius: 10px;
+  /* padding: 40px; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  /* overflow: hidden; */
   width : 100%;
+  /* padding-right: -40px; */
+  padding-bottom: 20px;
+  padding-top: 20px;
+  overflow: visible;
 }
 
 .chart-header {
