@@ -2,7 +2,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import LogoutButton from "../Navigation/LogoutButton";
-import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
 import logo from "/src/webull-logo.svg";
 
@@ -10,6 +9,7 @@ const Navigation = () => {
   const user = useSelector(state => state.session.user);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
@@ -45,9 +45,11 @@ const Navigation = () => {
     }
 
     const delay = setTimeout(async () => {
+      setLoading(true);
       const res = await fetch(`/api/stocks/search?query=${encodeURIComponent(query)}`);
       const data = await res.json();
       setResults(data);
+      setLoading(false);
       setShowDropdown(true);
     }, 300);
 
@@ -64,7 +66,7 @@ const Navigation = () => {
   return (
     <nav className="webull-navbar">
       <div className="nav-left">
-        <img
+      <img
           className="logo-img"
           src="https://raw.githubusercontent.com/2fasvg/2fasvg.github.io/master/assets/img/logo/webull.com/webull.com.svg"
           alt="Webull Logo"
@@ -87,7 +89,6 @@ const Navigation = () => {
         </ul>
       </div>
 
-      {/* 🔍 Search Bar with Dropdown */}
       <div className="search-bar">
         <form onSubmit={handleSearch}>
           <input
@@ -101,19 +102,25 @@ const Navigation = () => {
           <button type="submit">Search</button>
         </form>
 
-        {/* 🔽 Dropdown Suggestions */}
-        {showDropdown && results.length > 0 && (
+        {showDropdown && (
           <ul className="search-dropdown">
-            {results.map((stock) => (
-              <li key={stock.id} onClick={() => handleSelect(stock.symbol)}>
-                {stock.symbol} - {stock.name}
-              </li>
-            ))}
+            {loading ? (
+              <li className="loading-spinner">🔄 Loading...</li>
+            ) : results.length > 0 ? (
+              results.map((stock) => (
+                <li key={stock.id} onClick={() => handleSelect(stock.symbol)}>
+                  {stock.symbol} - {stock.name}
+                </li>
+              ))
+            ) : (
+              <li className="no-results">No results found.</li>
+            )}
           </ul>
         )}
 
-        {/* 🟩 Toast Message */}
-        {toastMessage && <div className="toast-message under-search">{toastMessage}</div>}
+        {toastMessage && (
+          <div className="toast-message under-search">{toastMessage}</div>
+        )}
       </div>
 
       <div className="auth1-btn">
