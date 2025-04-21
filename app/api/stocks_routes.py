@@ -77,13 +77,13 @@ def get_stock_history(symbol):
         StockHistory.timeframe == timeframe
     ).order_by(StockHistory.date.desc()).all()
 
-    print(f"[DEBUG] Fetched {len(cached_data)} cached entries for {symbol} ({timeframe})")
-    print(f"[DEBUG] Latest cache date: {cached_data[0].date}" if cached_data else "[DEBUG] No cached entries")
+    #print(f"[DEBUG] Fetched {len(cached_data)} cached entries for {symbol} ({timeframe})")
+    #print(f"[DEBUG] Latest cache date: {cached_data[0].date}" if cached_data else "[DEBUG] No cached entries")
 
 
     # ✅ Serve cached response if it's fresh
     if cached_data and cached_data[0].date >= (now - timedelta(days=10)).date():
-        print("[✅] Returning cached stock history from DB...")
+        #print("[✅] Returning cached stock history from DB...")
         return jsonify([entry.to_dict() for entry in cached_data])
 
     # 🛰️ Call Alpha Vantage API
