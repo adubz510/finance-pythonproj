@@ -1,4 +1,3 @@
-
 .webull-navbar {
   position: fixed;
   top: 0;
@@ -12,16 +11,16 @@
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 60px;
-}
+  }
 
-.brand {
+  .brand {
   font-size: 2.5rem;
   font-weight: bold;
-}
+  }
 
 
 
-.nav-links {
+  .nav-links {
   display: flex;
   justify-content: space-evenly;
   flex: 1;
@@ -31,47 +30,47 @@
   padding: 0;
   padding-left: 20%;
   cursor: pointer;
-}
+  }
 
 
-.nav-links a {
+  .nav-links a {
   color: black;
   text-decoration: none;
   font-weight: 500;
   text-transform: uppercase;
   font-size: 1rem;
-}
+  }
 
-.nav-links a:hover,
-.nav-links a.active {
+  .nav-links a:hover,
+  .nav-links a.active {
   color: #0033cc
-}
+  }
 
-.brand {
+  .brand {
   padding-left: 20px;
   color: black
-}
+  }
 
-.search-bar {
+  .search-bar {
   padding-left: 10%;
   position: relative;
-}
+  }
 
-.search-bar input {
+  .search-bar input {
   background-color: #EFEFEF;
   padding: 0.5rem 1rem;
   border-radius: 999px;
   border: 1rem;
   outline: 1rem;
   font-size: 1rem;
-}
+  }
 
-.auth1-btn {
+  .auth1-btn {
   display: flex;
   gap: 0.9rem;
-}
+  }
 
-.login-btn {
+  .login-btn {
   background-color: #1f80e4;
   color: white;
   border-radius: 999px;
@@ -82,9 +81,9 @@
   font-size: 1rem;
   text-decoration: none;
   cursor: pointer;
-}
+  }
 
-.signup-btn {
+  .signup-btn {
   background-color: #9aacbd;
   color: white;
   border-radius: 999px;
@@ -95,8 +94,8 @@
   font-size: 1rem;
   text-decoration: none;
   cursor: pointer;
-}
-.toast-message.under-search {
+  }
+  .toast-message.under-search {
   position: absolute;
   left: 105%;
   top: 50%;
@@ -109,21 +108,22 @@
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 1000;
-}
+  }
 
-@keyframes fade-in-out {
+  @keyframes fade-in-out {
   0% { opacity: 0; transform: translateY(-10px); }
   10% { opacity: 1; transform: translateY(0); }
   90% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-10px); }
-}
+  }
 
 
-.search-bar {
+  .search-bar {
   position: relative;
-}
+  overflow: visible;
+  }
 
-.search-dropdown {
+  .search-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
@@ -135,13 +135,23 @@
   overflow-y: auto;
   z-index: 999;
   border-radius: 4px;
-}
+  list-style: none;
+  padding-left: 0; /* Removes left padding */
+  margin: 0;
+  }
 
-.search-dropdown li {
+  .search-dropdown li {
   padding: 8px 12px;
   cursor: pointer;
-}
+  }
 
-.search-dropdown li:hover {
+  .search-dropdown li:hover {
   background-color: #f3f3f3;
-}
+  }
+
+  .no-results{
+  pointer-events: none;
+  cursor: default;
+  color: #999;
+  background-color: transparent;
+  }
