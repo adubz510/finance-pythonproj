@@ -16,7 +16,7 @@ This is a full-stack clone of Webull, a commission-free stock trading platform. 
 
 | Feature | Screenshot |
 |--------|------------|
-| Signup Page | ![Signup Page](https://i.imgur.com/FYgxVd9.png) |
+| Signup Page | ![Signup Page](https://i.imgur.com/sQevVr5.png) |
 | Login Page | ![Login Page](https://i.imgur.com/ax9uYoF.png) |
 | Logged Out Homepage | ![Logged Out Homepage](https://i.imgur.com/VopXh6n.png) |
 | Logged In Homepage | ![Logged In Homepage](https://i.imgur.com/Jx1axCF.png) |
