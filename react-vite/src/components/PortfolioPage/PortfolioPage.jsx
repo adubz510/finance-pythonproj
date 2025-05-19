@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import AddPortfolioModal from "./AddPortfolioModal";
 import DeletePortfolioModal from "./DeletePortfolioModal";
-import AddMoneyModal from "../PortfolioDetails/AddMoneyModal";
 import "./PortfolioPage.css"
 import AddUserMoneyModal from "./AddUserMoneyModal";
 

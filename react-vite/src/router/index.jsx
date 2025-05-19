@@ -8,7 +8,6 @@ import WatchlistPage from '../components/WatchlistPage/WatchlistPage';
 import Layout from './Layout';
 import StockDetailPage from '../components/StockDetailPage/StockDetailPage';
 import StockListPage from '../components/StockListPage/StockListPage';
-import StockCard from '../components/StockCard/StockCard';
 
 export const router = createBrowserRouter([
   {

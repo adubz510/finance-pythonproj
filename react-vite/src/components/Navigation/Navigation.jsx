@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import LogoutButton from "../Navigation/LogoutButton";
 import "./Navigation.css";
-import logo from "/src/webull-logo.svg";
 
 const Navigation = () => {
     const user = useSelector(state => state.session.user);

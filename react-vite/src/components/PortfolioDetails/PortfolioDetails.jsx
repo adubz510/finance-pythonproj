@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { thunkFetchPortfolio, thunkUpdateBalance } from "../../redux/portfolio";
+import { thunkFetchPortfolio } from "../../redux/portfolio";
 import { thunkFetchUserBalance, setUserBalance } from "../../redux/user";
 import SellStockModal from "./SellStockModal";
 import AddMoneyModal from "./AddMoneyModal";
